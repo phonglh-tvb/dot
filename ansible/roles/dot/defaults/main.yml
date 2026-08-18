@@ -1,0 +1,3 @@
+# Repo root = thư mục chứa ansible/ (parent của playbook_dir khi chạy osx.yml trong ansible/)
+dot_repo_root: "{{ playbook_dir | dirname }}"
+dot_config_src: "{{ dot_repo_root }}/config"

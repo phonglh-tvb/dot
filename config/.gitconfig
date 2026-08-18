@@ -1,0 +1,76 @@
+[filter "lfs"]
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
+
+[user]
+    name = unrealphong
+    email = phong.lh@tanvietbooks.com.vn
+    signingKey = ~/.ssh/id_ed25519
+
+[color]
+    ui = true
+
+[core]
+    pager = delta
+    autocrlf = input
+    editor = nvim
+    excludesFile = ~/.gitignore_global
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true
+    light = false
+    side-by-side = false
+    line-numbers = true
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+    algorithm = minimal
+    compactionHeuristic = true
+    renames = true
+
+[pull]
+    ff = only
+
+[push]
+    default = current
+
+[github]
+    user = phnglh
+
+[init]
+    defaultBranch = master
+
+[gpg]
+    format = ssh
+
+[gpg "ssh"]
+    program = /usr/bin/ssh-keygen
+    allowedSignersFile = ~/.ssh/allowed_signers
+
+[commit]
+    gpgsign = true
+
+[credential]
+    helper = cache
+
+[rebase]
+    autoStash = true
+
+[credential "https://github.com"]
+    helper = 
+    helper = !/opt/homebrew/bin/gh auth git-credential
+
+[credential "https://gist.github.com"]
+    helper = 
+    helper = !/opt/homebrew/bin/gh auth git-credential
+
+[include]
+path = ~/.gitalias

@@ -1,0 +1,16 @@
+.vscode/
+.history/
+.idea/
+*.sublime-workspace
+*.sublime-project
+*.code-workspace
+*.tmp
+*.log
+*.bak
+*.swp
+*.DS_Store
+config/tmux/plugins/
+
+# Local secrets / machine state
+docker/.env
+config/fish/fish_variables

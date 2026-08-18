@@ -1,0 +1,30 @@
+# theme = dark:Rose Pine Moon,light:Rose Pine Dawn
+theme = Rose Pine
+font-family = "MartianMono Nerd Font Mono"
+font-size = 12
+adjust-cell-height = 20%
+
+background-opacity = 1
+
+# Optional: Add background blur for a nicer transparent effect
+#background-blur = 20
+
+# Hide the title bar on macOS
+macos-titlebar-style = tabs
+
+# Window size - always open with consistent dimensions
+# Size is in terminal grid cells (characters wide by lines high)
+window-width = 160
+window-height = 50
+
+# Fix backspace key issues
+term = xterm-256color
+
+# Explicit keybindings for backspace to ensure it works correctly
+keybind = backspace=text:\x7f
+keybind = ctrl+backspace=text:\x08
+
+cursor-style = block
+cursor-style-blink = true
+shell-integration-features = no-cursor
+keybind = shift+enter=text:\n

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+function have {
+  command -v "$1" &>/dev/null
+}
+
+# install ansible
+have ansible || pipx install --include-deps ansible
+
+# Ensure pipx bin dir is in PATH (pipx may have just installed it)
+export PATH="$HOME/.local/bin:$PATH"
+
+# Run Ansible
+ansible-playbook -i ./hosts ./osx.yml --ask-become-pass

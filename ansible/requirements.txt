@@ -1,0 +1,2 @@
+# Ansible chỉ cho playbook trong repo này (không dùng pipx/global).
+ansible-core>=2.15,<2.19

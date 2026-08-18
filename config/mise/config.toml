@@ -1,0 +1,6 @@
+[tools]
+go = "latest"
+java = ["temurin-21.0.11+10.0.LTS", "temurin-25.0.3+9.0.LTS"]
+node = "latest"
+python = "latest"
+ruby = "latest"

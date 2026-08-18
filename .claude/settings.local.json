@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(# Look at conf.d pattern for fish - these are auto-loaded *)",
+      "Read(//Users/phnglh/.config/fish/functions/**)"
+    ]
+  }
+}

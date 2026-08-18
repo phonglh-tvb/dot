@@ -1,0 +1,29 @@
+- name: Check which security tools are already installed
+  command: "command -v {{ item }}"
+  args:
+    # command -v is a shell builtin; run via /bin/sh
+    executable: /bin/sh
+  register: pkg_security_check
+  changed_when: false
+  failed_when: false
+  loop:
+    - trivy
+    - osv-scanner
+    - socket
+  loop_control:
+    label: "{{ item }}"
+
+- name: Build set of missing tools
+  set_fact:
+    pkg_security_missing: "{{ pkg_security_check.results | selectattr('rc', 'ne', 0) | map(attribute='item') | list }}"
+
+- name: Install missing Homebrew security tools (macOS)
+  command: "brew install {{ item }}"
+  loop: "{{ pkg_security_missing | intersect(['trivy', 'osv-scanner']) }}"
+  when: ansible_facts['os_family'] == "Darwin"
+  loop_control:
+    label: "{{ item }}"
+
+- name: Install socket CLI globally via npm
+  command: npm install -g socket
+  when: "'socket' in pkg_security_missing"

@@ -1,0 +1,9 @@
+# Machine-specific fish universal variables
+fish_variables
+
+# Managed by fisher (regenerated via `fisher update`)
+functions/fisher.fish
+functions/fzf_configure_bindings.fish
+functions/_fzf_*.fish
+conf.d/fzf.fish
+completions/
