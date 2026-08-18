@@ -5,7 +5,7 @@
     required = true
 
 [user]
-    name = unrealphong
+    name = phonglh-tvb
     email = phong.lh@tanvietbooks.com.vn
     signingKey = ~/.ssh/id_ed25519
 
