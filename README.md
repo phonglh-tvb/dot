@@ -30,6 +30,7 @@ config/            mọi cấu hình, link vào máy theo quy ước bên dướ
   fish/ tmux/ ghostty/ wezterm/ alacritty/ ...
   .gitconfig       -> ~/.gitconfig
   .gitignore_global
+  .zshenv .zprofile .zshrc   -> ~/   zsh tối thiểu (xem dưới)
 scripts/link.sh    symlink an toàn (xem dưới)
 scripts/secrets.sh kiểm tra / quản lý secret (1Password, sops + age)
 .githooks/         hook gitleaks chặn commit / push chứa secret
@@ -57,6 +58,12 @@ scripts/link.sh unlink     # gỡ các link của repo này
 Thêm cấu hình mới: tạo `config/<tên>` rồi chạy `scripts/link.sh`.
 
 `link.sh` không bao giờ xoá đồ của bạn: file hay thư mục đang chiếm chỗ được chuyển vào `~/.dotfiles-backup/<thời gian>/` trước khi tạo link. Đích đã đúng thì bỏ qua nên chạy lại vô hại.
+
+## Shell
+
+Shell tương tác chính là fish (`config/fish`). Zsh vẫn có cấu hình tối thiểu vì công cụ và IDE hay chạy zsh: `.zprofile` nạp Homebrew và `mise` (shims, nên `node`, `go`... đúng bản ở mọi nơi), `.zshrc` chỉ có prompt starship, atuin, zoxide, direnv, fzf và vài alias. Không dùng oh-my-zsh.
+
+Trong cấu hình fish, tmux và git, những chỗ gắn với macOS (`open -a`, `pbcopy`, đường dẫn `/opt/homebrew/bin/gh`) đã có nhánh cho Linux hoặc lấy theo PATH. `install.sh` thì vẫn chỉ chạy trên macOS.
 
 ## Neovim
 

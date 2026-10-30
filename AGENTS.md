@@ -88,6 +88,7 @@ Phạm vi: Homebrew (`brew outdated`), runtime mise (`mise outdated`), plugin Ne
 | LSP, formatter, debugger | `lua/configs/tools.lua` (Mason), `lspconfig.lua`, `conform.lua`, `dap.lua` |
 | Phím tắt Neovim | `lua/mappings.lua` (giữ bộ phím NvChad, không đè phím cũ nếu không được nói rõ) |
 | Alias, hàm, biến fish | `config/fish/` (`conf.d/*.fish` tự nạp) |
+| Zsh (shell của công cụ và IDE) | `config/.zshenv`, `.zprofile`, `.zshrc`: giữ tối thiểu, không oh-my-zsh. Thử bằng `ZDOTDIR=<worktree>/config zsh -l -i` trong môi trường sạch (`env -i`), không đè lên `~/.zshrc` thật |
 | Git | `config/.gitconfig`, `config/.gitignore_global` |
 | Bước cài mới | `install.sh`: thêm vào `STEPS`, hàm `step_<tên>`, ghi chú đầu file, bảng trong README |
 | Secret, hook | `scripts/secrets.sh`, `.githooks/`, `.gitleaks.toml`, `docs/secrets.md` |
