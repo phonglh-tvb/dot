@@ -26,9 +26,27 @@ function M.setup()
   end
 
   local js_configs = {
-    { type = "pwa-node", request = "launch", name = "Node: launch file", program = "${file}", cwd = "${workspaceFolder}" },
-    { type = "pwa-node", request = "attach", name = "Node: attach to process", processId = require("dap.utils").pick_process, cwd = "${workspaceFolder}" },
-    { type = "pwa-chrome", request = "launch", name = "Chrome: localhost:3000", url = "http://localhost:3000", webRoot = "${workspaceFolder}" },
+    {
+      type = "pwa-node",
+      request = "launch",
+      name = "Node: launch file",
+      program = "${file}",
+      cwd = "${workspaceFolder}",
+    },
+    {
+      type = "pwa-node",
+      request = "attach",
+      name = "Node: attach to process",
+      processId = require("dap.utils").pick_process,
+      cwd = "${workspaceFolder}",
+    },
+    {
+      type = "pwa-chrome",
+      request = "launch",
+      name = "Chrome: localhost:3000",
+      url = "http://localhost:3000",
+      webRoot = "${workspaceFolder}",
+    },
   }
 
   for _, ft in ipairs { "javascript", "typescript", "javascriptreact", "typescriptreact" } do

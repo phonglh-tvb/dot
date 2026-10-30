@@ -1,6 +1,7 @@
 -- Neovim tự lo highlight / indent / fold bằng treesitter; nvim-treesitter (nhánh main) chỉ dùng để cài parser.
 local M = {}
 
+-- stylua: ignore
 M.parsers = {
   "vim", "lua", "luadoc", "vimdoc", "printf",
   -- web / frontend

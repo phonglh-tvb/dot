@@ -73,7 +73,12 @@ autocmd("FileType", {
       )
     end
 
-    vim.keymap.set("n", "<leader>ms", "<cmd>setlocal spell! spelllang=en<cr>", { buf = args.buf, desc = "Toggle spell (en)" })
+    vim.keymap.set(
+      "n",
+      "<leader>ms",
+      "<cmd>setlocal spell! spelllang=en<cr>",
+      { buf = args.buf, desc = "Toggle spell (en)" }
+    )
   end,
 })
 
