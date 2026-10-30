@@ -33,7 +33,10 @@ vim.api.nvim_create_autocmd("PackChanged", {
       update_parsers = true
     elseif name == "markdown-preview.nvim" then
       -- npm sửa yarn.lock; trả lại để plugin không bị coi là "có thay đổi cục bộ"
-      local job = vim.system({ "sh", "-c", "cd app && npm install --no-package-lock && git checkout -- yarn.lock" }, { cwd = path })
+      local job = vim.system(
+        { "sh", "-c", "cd app && npm install --no-package-lock && git checkout -- yarn.lock" },
+        { cwd = path }
+      )
       if headless then
         job:wait()
       end

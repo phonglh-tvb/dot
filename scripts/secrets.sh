@@ -57,7 +57,10 @@ cmd_check() {
   echo "Khoá age (sops)"
   if [ -f "$KEY_FILE" ]; then
     p="$(perm_of "$KEY_FILE")"
-    if [ "$p" = 600 ]; then row "$KEY_FILE" "quyền 600"; else row "$KEY_FILE" "quyền $p, phải là 600: chmod 600"; problems=$((problems + 1)); fi
+    if [ "$p" = 600 ]; then row "$KEY_FILE" "quyền 600"; else
+      row "$KEY_FILE" "quyền $p, phải là 600: chmod 600"
+      problems=$((problems + 1))
+    fi
   else
     row "$KEY_FILE" "chưa có (scripts/secrets.sh age-init)"
   fi
@@ -65,12 +68,18 @@ cmd_check() {
   echo "SSH"
   if [ -d "$HOME/.ssh" ]; then
     p="$(perm_of "$HOME/.ssh")"
-    if [ "$p" = 700 ]; then row "$ssh_dir" "quyền 700"; else row "$ssh_dir" "quyền $p, phải là 700"; problems=$((problems + 1)); fi
+    if [ "$p" = 700 ]; then row "$ssh_dir" "quyền 700"; else
+      row "$ssh_dir" "quyền $p, phải là 700"
+      problems=$((problems + 1))
+    fi
     for f in "$HOME"/.ssh/id_*; do
       [ -f "$f" ] || continue
       case "$f" in *.pub) continue ;; esac
       p="$(perm_of "$f")"
-      if [ "$p" = 600 ]; then row "$ssh_dir/$(basename "$f")" "quyền 600"; else row "$ssh_dir/$(basename "$f")" "quyền $p, phải là 600"; problems=$((problems + 1)); fi
+      if [ "$p" = 600 ]; then row "$ssh_dir/$(basename "$f")" "quyền 600"; else
+        row "$ssh_dir/$(basename "$f")" "quyền $p, phải là 600"
+        problems=$((problems + 1))
+      fi
     done
   fi
   for socket in "$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock" "$HOME/.1password/agent.sock"; do

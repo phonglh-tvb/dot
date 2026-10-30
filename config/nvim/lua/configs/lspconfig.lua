@@ -105,7 +105,13 @@ vim.lsp.config("pyright", {
       return
     end
     local root = vim.fs.root(file, {
-      "pyrightconfig.json", "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", "Pipfile", ".git",
+      "pyrightconfig.json",
+      "pyproject.toml",
+      "setup.py",
+      "setup.cfg",
+      "requirements.txt",
+      "Pipfile",
+      ".git",
     })
     on_dir(root or vim.fs.dirname(file))
   end,

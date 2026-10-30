@@ -24,7 +24,8 @@ local function installed_jdks()
 end
 
 local function bundles()
-  local jars = vim.fn.glob(mason "java-debug-adapter/extension/server/com.microsoft.java.debug.plugin-*.jar", true, true)
+  local jars =
+    vim.fn.glob(mason "java-debug-adapter/extension/server/com.microsoft.java.debug.plugin-*.jar", true, true)
   local skip = { ["com.microsoft.java.test.runner-jar-with-dependencies.jar"] = true, ["jacocoagent.jar"] = true }
   for _, jar in ipairs(vim.fn.glob(mason "java-test/extension/server/*.jar", true, true)) do
     if not skip[vim.fs.basename(jar)] then
@@ -66,7 +67,14 @@ function M.start(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
 
   local root = vim.fs.root(bufnr, {
-    "mvnw", "gradlew", "settings.gradle", "settings.gradle.kts", "pom.xml", "build.gradle", "build.gradle.kts", ".git",
+    "mvnw",
+    "gradlew",
+    "settings.gradle",
+    "settings.gradle.kts",
+    "pom.xml",
+    "build.gradle",
+    "build.gradle.kts",
+    ".git",
   }) or vim.fn.getcwd()
 
   -- jdtls bản mới đòi JDK mới nhất (hiện là 25) để chạy, độc lập với JDK mà project build
@@ -80,7 +88,11 @@ function M.start(bufnr)
     })
   end
 
-  local workspace = ("%s/jdtls/%s-%s"):format(vim.fn.stdpath "cache", vim.fs.basename(root), vim.fn.sha256(root):sub(1, 8))
+  local workspace = ("%s/jdtls/%s-%s"):format(
+    vim.fn.stdpath "cache",
+    vim.fs.basename(root),
+    vim.fn.sha256(root):sub(1, 8)
+  )
   local cmd = { "jdtls", "-data", workspace }
   local lombok = mason "jdtls/lombok.jar"
   if vim.uv.fs_stat(lombok) then

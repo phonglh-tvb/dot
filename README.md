@@ -37,7 +37,7 @@ scripts/secrets.sh kiểm tra / quản lý secret (1Password, sops + age)
 .githooks/         hook gitleaks chặn commit / push chứa secret
 docs/secrets.md    cách giữ secret ngoài repo
 AGENTS.md          hướng dẫn cho AI agent: phân tích yêu cầu, nhánh, kiểm chứng, PR (CLAUDE.md trỏ tới đây)
-.github/           mẫu mô tả PR
+.github/           mẫu mô tả PR và CI (workflows/ci.yml)
 install.sh         dựng máy mới theo từng bước
 scripts/drift.sh   so máy với khai báo: cài mà chưa khai báo, khai báo mà chưa cài (chỉ đọc)
 Brewfile           phần lõi: công cụ dòng lệnh
@@ -63,6 +63,10 @@ Thêm cấu hình mới: tạo `config/<tên>` rồi chạy `scripts/link.sh`.
 Thêm gói: sửa tay đúng file `Brewfile*` (giữ thứ tự theo tên ngắn trong từng nhóm), rồi `scripts/drift.sh` để chắc máy và khai báo đã khớp. Không còn lệnh ghi đè Brewfile từ máy, vì một máy cụ thể không nên quyết định cả danh sách.
 
 `link.sh` không bao giờ xoá đồ của bạn: file hay thư mục đang chiếm chỗ được chuyển vào `~/.dotfiles-backup/<thời gian>/` trước khi tạo link. Đích đã đúng thì bỏ qua nên chạy lại vô hại.
+
+## CI
+
+Mỗi PR và mỗi lần đẩy lên `master` chạy [.github/workflows/ci.yml](.github/workflows/ci.yml): `shellcheck`, `shfmt`, `stylua --check`, `actionlint`, gitleaks (file và lịch sử); rồi trên cả Ubuntu và macOS dựng cấu hình trong HOME giả (`link.sh` chạy hai lần phải không đổi gì), kiểm cú pháp zsh / fish, kiểm tmux chọn đúng lệnh clipboard. Chạy cùng các lệnh đó trên máy trước khi đẩy; công cụ có sẵn trong Brewfile.
 
 ## Shell
 
