@@ -95,13 +95,13 @@ jobs:
         run: |
           export TERM=xterm-256color
           tmux -L ci -f config/tmux/tmux.conf new-session -d -s ci 'sleep 60'
-          got="$(tmux -L ci show -s copy-command)"
+          got="$(tmux -L ci show -sv copy-command)"
           tmux -L ci kill-server
           echo "$got"
           if [ "$RUNNER_OS" = Linux ]; then
-            [ "$got" = "copy-command xclip -selection clipboard -in" ]
+            [ "$got" = "xclip -selection clipboard -in" ]
           else
-            [ "$got" = "copy-command pbcopy" ]
+            [ "$got" = "pbcopy" ]
           fi
 
       - name: Brewfile đúng cú pháp
