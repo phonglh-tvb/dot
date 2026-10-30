@@ -1,0 +1,57 @@
+# Ứng dụng đồ hoạ và font (chỉ macOS). Bỏ qua trên server: DOT_PROFILES="devops" ./install.sh brew
+
+# bảo mật, tiện ích hệ thống
+cask "1password"
+cask "1password-cli"
+cask "betterdisplay"
+cask "karabiner-elements"
+cask "openkey"
+cask "openlogi"
+cask "raycast"
+
+# terminal và editor
+cask "cursor"
+cask "ghostty"
+cask "intellij-idea"
+cask "iterm2"
+cask "kiro"
+cask "rider"
+cask "visual-studio-code"
+cask "visual-studio-code@insiders"
+cask "zed"
+
+# AI trong terminal
+cask "claude-code"
+cask "codex"
+
+# cơ sở dữ liệu, API, thiết kế
+cask "dbeaver-community"
+cask "figma"
+cask "pgadmin4"
+cask "postman"
+
+# trình duyệt
+cask "brave-browser"
+cask "firefox@developer-edition"
+cask "google-chrome"
+
+# tài liệu
+cask "mactex"
+cask "notion"
+cask "obsidian"
+cask "skim"
+
+# liên lạc, làm việc từ xa
+cask "anydesk"
+cask "discord"
+cask "microsoft-teams"
+cask "rustdesk"
+cask "slack"
+cask "telegram"
+cask "viber"
+cask "whatsapp"
+cask "zalo"
+
+# font
+cask "font-jetbrains-mono-nerd-font"
+cask "font-martian-mono-nerd-font"
