@@ -9,7 +9,7 @@
 #   brew   Homebrew + mọi thứ trong Brewfile
 #   link   symlink config/ vào ~ (scripts/link.sh; đồ có sẵn được backup, không bị xoá)
 #   mise   runtime (go, java, node, python...) theo config/mise/config.toml
-#   nvim   plugin Neovim, công cụ Mason (LSP, formatter, debugger), parser treesitter
+#   nvim   plugin Neovim (vim.pack), công cụ Mason (LSP, formatter, debugger), parser treesitter
 
 set -euo pipefail
 
@@ -52,14 +52,22 @@ step_nvim() {
   [ -e "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/init.lua" ] || die "chưa có ~/.config/nvim; chạy './install.sh link' trước"
 
   # Thứ tự quan trọng: plugin -> công cụ Mason (có tree-sitter-cli) -> parser treesitter.
-  # "restore" cài đúng commit trong lazy-lock.json (tái lập được, không làm bẩn repo);
-  # muốn lên bản mới thì chạy tay ":Lazy update" trong nvim.
+  # vim.pack cài đúng commit trong nvim-pack-lock.json (tái lập được, không làm bẩn repo);
+  # muốn lên bản mới thì chạy tay ":lua vim.pack.update()" trong nvim.
   echo "plugin..."
-  nvim --headless "+Lazy! restore" +qa
+  # vim.pack có thể hết thời gian khi mạng chậm; chạy lại sẽ cài nốt phần còn thiếu.
+  # Exit code của nvim luôn là 0 kể cả khi init lỗi, nên kiểm tra thực tế: thư mục plugin có file.
+  local attempt
+  for attempt in 1 2 3; do
+    nvim --headless "+qa" || true
+    nvim --headless '+lua for _, p in ipairs(vim.pack.get(nil, { info = false })) do if vim.fn.isdirectory(p.path) == 0 or #vim.fn.readdir(p.path) <= 1 then vim.cmd "cq" end end' +qa && break
+    [ "$attempt" -lt 3 ] || die "cài plugin Neovim chưa đủ sau 3 lần; kiểm tra mạng rồi chạy lại './install.sh nvim'"
+    echo "chưa đủ plugin, thử lại ($attempt/3)..."
+  done
   echo "công cụ Mason..."
   nvim --headless "+MasonToolsInstallSync" +qa
   echo "parser treesitter..."
-  nvim --headless "+lua require('nvim-treesitter').install(require('lazy.core.config').plugins['nvim-treesitter'].opts.ensure_installed):wait(600000)" +qa
+  nvim --headless "+lua require('configs.treesitter').install():wait(600000)" +qa
 }
 
 next_steps() {

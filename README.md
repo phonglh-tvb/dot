@@ -17,7 +17,7 @@ cd ~/workspace/work/dot
 | `brew` | cài Homebrew nếu chưa có, rồi mọi thứ trong `Brewfile` |
 | `link` | symlink `config/` vào máy ([scripts/link.sh](scripts/link.sh)) |
 | `mise` | runtime (go, java, node, python, ruby, dotnet) theo `config/mise/config.toml` |
-| `nvim` | plugin Neovim (đúng commit trong `lazy-lock.json`), công cụ Mason, parser treesitter. Lần đầu tải vài GB nên khá lâu |
+| `nvim` | plugin Neovim (đúng commit trong `nvim-pack-lock.json`), công cụ Mason, parser treesitter. Lần đầu tải vài GB nên khá lâu |
 
 Còn vài việc phải làm tay vì cần mật khẩu / đăng nhập (script nhắc lại ở cuối): đặt fish làm shell mặc định (`chsh`), `gh auth login`, khoá SSH để ký commit, `~/.gitconfig-personal`.
 
@@ -25,7 +25,7 @@ Còn vài việc phải làm tay vì cần mật khẩu / đăng nhập (script 
 
 ```
 config/            mọi cấu hình, link vào máy theo quy ước bên dưới
-  nvim/            Neovim (NvChad v2.5): LSP, format, debug, viết tài liệu
+  nvim/            Neovim 0.12 thuần (vim.pack) + giao diện NvChad: LSP, format, debug, viết tài liệu
   fish/ tmux/ ghostty/ wezterm/ alacritty/ ...
   .gitconfig       -> ~/.gitconfig
   .gitignore_global
@@ -54,9 +54,22 @@ Thêm cấu hình mới: tạo `config/<tên>` rồi chạy `scripts/link.sh`.
 
 ## Neovim
 
-- Công cụ (LSP, formatter, debug adapter) khai báo một chỗ trong `config/nvim/lua/configs/tools.lua`; `mason-tool-installer` tự cài những gói còn thiếu.
-- `lazy-lock.json` ghim phiên bản plugin. Cập nhật: `:Lazy update` rồi commit lockfile.
-- Cài lại công cụ bằng tay: `:MasonToolsInstall`.
+Cấu hình thuần Neovim 0.12, không dùng NvChad (bản distribution) hay lazy.nvim. Những gì Neovim đã có sẵn thì dùng bản gốc: `vim.pack` (quản lý plugin), `vim.lsp.config` / `vim.lsp.enable`, completion và snippet LSP (`vim.lsp.completion`, `vim.snippet`), `gc` để comment, treesitter highlight. Giao diện (statusline, tabufline, nvdash, đổi theme) vẫn là plugin `nvchad/ui` + `nvchad/base46`, chạy độc lập.
+
+```
+init.lua                 vào cấu hình
+lua/plugins.lua          danh sách plugin (vim.pack) + hook build
+lua/options.lua          tuỳ chọn (gồm mặc định NvChad đã chép lại)
+lua/mappings.lua         phím tắt (giữ nguyên bộ phím NvChad)
+lua/autocmds.lua         indent theo ngôn ngữ, viết tài liệu, Java
+lua/configs/             lspconfig, conform, dap, jdtls, rust, tools (danh sách Mason), ui, writing
+nvim-pack-lock.json      commit của từng plugin (đưa vào git)
+```
+
+- Plugin ghim bằng `nvim-pack-lock.json`: máy mới mở nvim (hoặc `./install.sh nvim`) là cài đúng commit.
+- Cập nhật plugin: `:lua vim.pack.update()`, xem thay đổi, `:write` để chấp nhận, rồi commit lockfile. Hoàn lại: `git checkout HEAD -- nvim-pack-lock.json` rồi `:restart`.
+- Công cụ (LSP, formatter, debug adapter) khai báo một chỗ trong `lua/configs/tools.lua`; `mason-tool-installer` tự cài những gói còn thiếu. Cài lại bằng tay: `:MasonToolsInstall`.
+- Cài plugin bị ngắt giữa chừng: khởi động sau sẽ tự xoá thư mục hỏng và cài lại.
 
 ## Ansible (tuỳ chọn)
 

@@ -1,4 +1,16 @@
-require "nvchad.autocmds"
+local autocmd = vim.api.nvim_create_autocmd
+
+-- Treesitter highlight cho mọi filetype có parser (giống NvChad); không có parser thì pcall bỏ qua
+autocmd("FileType", {
+  pattern = "*",
+  callback = function()
+    pcall(vim.treesitter.start)
+  end,
+})
+
+vim.api.nvim_create_user_command("TSInstallAll", function()
+  require("configs.treesitter").install()
+end, {})
 
 -- Indent theo ngôn ngữ (options.lua mặc định 2 space; ftplugin chạy trước nên autocmd này ghi đè)
 local indent = {
@@ -10,7 +22,7 @@ local indent = {
 }
 
 for ft, style in pairs(indent) do
-  vim.api.nvim_create_autocmd("FileType", {
+  autocmd("FileType", {
     pattern = ft,
     callback = function()
       vim.bo.tabstop = style[1]
@@ -22,17 +34,26 @@ for ft, style in pairs(indent) do
 end
 
 -- Treesitter indent cho jsx/tsx/html (indent mặc định của vim kém ở các ngôn ngữ này)
-vim.api.nvim_create_autocmd("FileType", {
+autocmd("FileType", {
   pattern = { "javascriptreact", "typescriptreact", "html" },
   callback = function()
     vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
   end,
 })
 
+-- Java: nvim-jdtls tự quản lý client, không qua vim.lsp.enable
+autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("UserJdtls", { clear = true }), -- không dùng "jdtls": plugin/jdtls.lua của nvim-jdtls clear group cùng tên
+  pattern = "java",
+  callback = function(args)
+    require("configs.jdtls").start(args.buf)
+  end,
+})
+
 -- Viết tài liệu: markdown / latex / typst
 local prose = vim.api.nvim_create_augroup("Prose", { clear = true })
 
-vim.api.nvim_create_autocmd("FileType", {
+autocmd("FileType", {
   group = prose,
   pattern = { "markdown", "tex", "plaintex", "typst" },
   callback = function(args)
@@ -42,26 +63,22 @@ vim.api.nvim_create_autocmd("FileType", {
     wo.list = false -- listchars (eol, trail) rất rối trên văn bản wrap
     wo.spell = false -- không có từ điển tiếng Việt; bật bằng <leader>ms khi viết tiếng Anh
 
-    local function map(lhs, rhs, desc)
-      vim.keymap.set("n", lhs, rhs, { buffer = args.buf, desc = desc })
-    end
-
     -- di chuyển theo dòng hiển thị khi không có count
     for key, move in pairs { j = "gj", k = "gk" } do
       vim.keymap.set(
         { "n", "x" },
         key,
         ("v:count == 0 ? '%s' : '%s'"):format(move, key),
-        { buffer = args.buf, expr = true, desc = "Move by display line" }
+        { buf = args.buf, expr = true, desc = "Move by display line" }
       )
     end
 
-    map("<leader>ms", "<cmd>setlocal spell! spelllang=en<cr>", "Toggle spell (en)")
+    vim.keymap.set("n", "<leader>ms", "<cmd>setlocal spell! spelllang=en<cr>", { buf = args.buf, desc = "Toggle spell (en)" })
   end,
 })
 
 -- vimtex dùng syntax của nó (conceal, mathzone); treesitter highlight sẽ đè lên
-vim.api.nvim_create_autocmd("FileType", {
+autocmd("FileType", {
   group = prose,
   pattern = { "tex", "plaintex", "bibtex" },
   callback = function(args)
@@ -72,12 +89,12 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- Phím tắt <leader>m*: cùng một chữ cái, tuỳ loại file
 local function ft_maps(ft, maps)
-  vim.api.nvim_create_autocmd("FileType", {
+  autocmd("FileType", {
     group = prose,
     pattern = ft,
     callback = function(args)
       for _, m in ipairs(maps) do
-        vim.keymap.set("n", m[1], m[2], { buffer = args.buf, desc = m[3] })
+        vim.keymap.set("n", m[1], m[2], { buf = args.buf, desc = m[3] })
       end
     end,
   })
@@ -102,15 +119,20 @@ ft_maps({ "tex", "plaintex" }, {
   { "<leader>mi", "<cmd>VimtexInfo<cr>", "LaTeX info" },
 })
 
--- Debug test Go (nvim-dap-go); nạp nvim-dap trước vì nó lazy-load theo phím <leader>d*
-local function dap_go(fn)
-  return function()
-    require("lazy").load { plugins = { "nvim-dap" } }
-    require("dap-go")[fn]()
-  end
-end
-
+-- Debug test Go (nvim-dap-go)
 ft_maps("go", {
-  { "<leader>dT", dap_go "debug_test", "Debug nearest Go test" },
-  { "<leader>dL", dap_go "debug_last_test", "Debug last Go test" },
+  {
+    "<leader>dT",
+    function()
+      require("dap-go").debug_test()
+    end,
+    "Debug nearest Go test",
+  },
+  {
+    "<leader>dL",
+    function()
+      require("dap-go").debug_last_test()
+    end,
+    "Debug last Go test",
+  },
 })

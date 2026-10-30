@@ -1,7 +1,7 @@
--- Dùng cho vim.g.rustaceanvim (plugins/rust.lua)
+-- Dùng cho vim.g.rustaceanvim (plugins.lua)
 return {
   server = {
-    capabilities = require("nvchad.configs.lspconfig").capabilities,
+    capabilities = vim.lsp.protocol.make_client_capabilities(),
     default_settings = {
       ["rust-analyzer"] = {
         cargo = { allFeatures = true, loadOutDirsFromCheck = true },
@@ -13,7 +13,7 @@ return {
       local function map(lhs, cmd, desc)
         vim.keymap.set("n", lhs, function()
           vim.cmd.RustLsp(cmd)
-        end, { buffer = bufnr, desc = "Rust " .. desc })
+        end, { buf = bufnr, desc = "Rust " .. desc })
       end
 
       map("<leader>rr", "runnables", "runnables")
