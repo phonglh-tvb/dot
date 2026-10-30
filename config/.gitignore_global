@@ -42,3 +42,11 @@ node_modules/
 
 # Thumbnails
 Thumbs.db
+
+.envrc
+
+odools.toml
+
+**/.claude/settings.local.json
+Caddyfile
+mise.toml

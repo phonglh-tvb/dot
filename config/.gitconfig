@@ -35,6 +35,7 @@
     algorithm = minimal
     compactionHeuristic = true
     renames = true
+	tool = nvimdiff
 
 [pull]
     ff = only
@@ -65,12 +66,19 @@
     autoStash = true
 
 [credential "https://github.com"]
-    helper = 
-    helper = !/opt/homebrew/bin/gh auth git-credential
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
 
 [credential "https://gist.github.com"]
-    helper = 
-    helper = !/opt/homebrew/bin/gh auth git-credential
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+
+[includeIf "gitdir:~/workspace/personal/"]
+    path = ~/.gitconfig-personal
 
 [include]
 path = ~/.gitalias
+[difftool]
+	prompt = false
+[difftool "nvimdiff"]
+	cmd = nvim -d \"$LOCAL\" \"$REMOTE\"
