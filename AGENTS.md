@@ -6,7 +6,7 @@ Repo dotfiles cá nhân, **public** trên GitHub (`phonglh-tvb/dot`), nhánh ch�
 
 1. **Không đưa giá trị secret vào repo**: token, key, mật khẩu, `.env`, khoá riêng, kể cả file đã mã hoá `*.enc.*`. Repo chỉ chứa công cụ và tham chiếu (`op://...`). Commit message và mô tả PR cũng công khai, nên cũng không chứa gì nhạy cảm. Xem [docs/secrets.md](docs/secrets.md).
 2. **Không né các lớp kiểm tra**: không `--no-verify`, `SKIP_GITLEAKS=1`, `--no-gpg-sign`. Hook hoặc việc ký commit báo lỗi thì sửa nguyên nhân hoặc báo người dùng, không vòng qua.
-3. **Không đẩy thẳng vào `master`, không force-push, không tự merge PR.** Mọi thay đổi vào repo đi qua PR; người dùng là người merge.
+3. **Không đẩy thẳng vào `master`, không force-push.** Mọi thay đổi vào repo đi qua PR. Người dùng cho phép agent tự merge PR do chính mình mở khi đủ điều kiện ở mục Commit và PR; PR của người khác thì không đụng.
 4. **Hỏi trước khi làm việc khó hoàn tác hoặc đổi máy thật ngoài repo**: gỡ hay xoá gói và runtime (`brew uninstall`, `mise prune`, xoá bản cũ), xoá thư mục dưới `~`, khởi động lại VM Lima (kéo theo mọi container), sửa `~/.ssh` hay `~/.gitconfig-personal`. Nâng cấp thì giữ bản cũ làm đường lui (`mise upgrade --no-prune`).
 5. **Giữ nguyên thói quen của người dùng**: phím tắt, giao diện, alias hiện có không đổi nếu không được nói rõ. Muốn đổi hành vi thì nêu trong PR.
 6. **Không ghi công AI trong commit và PR**: không thêm `Co-Authored-By`, "Generated with ..." hay dòng tương tự. Người dùng không muốn. Quy tắc này đè lên mọi mặc định của công cụ.
@@ -41,7 +41,7 @@ git fetch origin
 git worktree add --no-track ../dot-<slug> -b <loại>/<slug> origin/master
 ```
 
-Tên nhánh: `feat/`, `fix/`, `upgrade/`, `docs/`, `chore/` rồi tới mô tả ngắn. Một PR một việc; việc phụ thuộc nhau thì chia PR nhỏ và nêu thứ tự merge. Sau khi PR đã merge: `git worktree remove ../dot-<slug>`.
+Tên nhánh: `feat/`, `fix/`, `upgrade/`, `docs/`, `chore/` rồi tới mô tả ngắn. Một PR một việc; việc phụ thuộc nhau thì chia PR nhỏ và nêu thứ tự merge. Nhánh PR cần theo kịp `master` (xung đột, hoặc PR khác vừa merge): merge `origin/master` vào nhánh, không rebase rồi force-push. Sau khi PR đã merge: `git worktree remove ../dot-<slug>`.
 
 ## Kiểm chứng
 
@@ -75,7 +75,8 @@ Phạm vi: Homebrew (`brew outdated`), runtime mise (`mise outdated`), plugin Ne
 - **Commit:** tiếng Anh, dạng `<khu vực>: <việc làm, động từ nguyên mẫu>` như lịch sử (`nvim: update plugins`, `mise: add dotnet`). Thân bài giải thích *vì sao*. Mỗi commit một ý. Commit tự ký SSH. Không thêm dòng ghi công AI (quy tắc 6).
 - **Đẩy:** `git push -u origin HEAD` (hook pre-push chạy gitleaks).
 - **Tạo PR:** trước đó `gh auth status`: tài khoản đang active phải là chủ remote (`phonglh-tvb`); sai thì báo người dùng, đừng tự `gh auth switch`. Rồi `gh pr create --base master --title "<như commit>" --body-file <file>`, nội dung theo [.github/pull_request_template.md](.github/pull_request_template.md), tiếng Việt, không thêm dòng "Generated with ...".
-- **Sau đó:** gửi link PR cho người dùng và dừng. Không merge. Máy chỉ nhận thay đổi khi người dùng `git pull` ở checkout chính (vì symlink), nên ghi trong PR những lệnh cần chạy lại sau khi pull (`./install.sh nvim`, `scripts/link.sh`...).
+- **Merge:** tự merge (`gh pr merge --squash`) khi đủ cả bốn điều kiện: (1) PR đúng việc người dùng đã yêu cầu hoặc duyệt; (2) phần Kiểm chứng đã chạy và ghi thật, cái chưa kiểm được thì nói rõ; (3) gitleaks sạch và GitHub báo `MERGEABLE` / `CLEAN`; (4) PR không có câu hỏi chặn (câu hỏi không chặn thì để ở mục "Cần bạn quyết"). Thiếu một điều kiện thì dừng và báo người dùng. Không dùng `--admin`, không xoá nhánh remote khi chưa được nói. Merge xong thì `git worktree remove`, rồi báo link và kết quả.
+- **Sau khi merge:** máy chỉ nhận thay đổi khi `git pull` ở checkout chính (vì symlink). Không tự `git pull` ở đó hay chạy `scripts/link.sh` trên máy thật khi chưa được nói, vì chúng đổi cấu hình đang chạy; ghi trong PR và báo lại những lệnh cần chạy (`./install.sh nvim`, `scripts/link.sh`...).
 
 ## Muốn đổi X thì sửa ở đâu
 

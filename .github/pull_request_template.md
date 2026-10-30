@@ -20,6 +20,10 @@
 
 <!-- Có thể hỏng gì, hoàn lại bằng cách nào (git revert, bản cũ còn giữ...). -->
 
+## Cần bạn quyết
+
+<!-- Câu hỏi không chặn merge. Câu hỏi nào chặn thì ghi "CHẶN MERGE" ở đầu dòng, agent sẽ không tự merge. Bỏ trống nếu không có. -->
+
 ## Làm tay sau khi merge
 
 <!-- git pull ở checkout chính (cấu hình là symlink vào đó), cùng lệnh cần chạy lại: ./install.sh nvim, scripts/link.sh ... Bỏ trống nếu không có. -->
