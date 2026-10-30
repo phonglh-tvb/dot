@@ -13,9 +13,14 @@ alias prv "fzf --preview 'bat --color=always --style=numbers --line-range=:500 {
 alias cs "open $argv -a 'Cursor'"
 alias vs "open $argv -a 'Visual Studio Code'"
 
-# starship init fish | source
+alias ls='eza'
+alias ll='eza -lah'
+alias la='eza -a'
+
 atuin init fish | source
 zoxide init fish --cmd cd | source
 
 # Added by Antigravity IDE
 fish_add_path /Users/phnglh/.antigravity-ide/antigravity-ide/bin
+
+string match -q "$TERM_PROGRAM" "kiro" and . (kiro --locate-shell-integration-path fish)
