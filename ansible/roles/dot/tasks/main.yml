@@ -1,50 +1,6 @@
-- name: Create ~/.config
-  file:
-    path: ~/.config
-    state: directory
-
-- name: Find .config files
-  find:
-    paths: "{{ dot_config_src }}"
-    recurse: no
-    file_type: any
-    hidden: yes
-  register: dot_config
-
-- name: Stat existing config destinations
-  stat:
-    path: "~/.config/{{item.path | basename}}"
-  loop: "{{ dot_config.files }}"
-  register: dot_config_stat
-  loop_control:
-    label: "~/.config/{{item.path | basename}}"
-
-- name: Remove non-symlink entries that conflict with dotfile symlinks
-  file:
-    path: "~/.config/{{item.item.path | basename}}"
-    state: absent
-  loop: "{{ dot_config_stat.results }}"
-  when: item.stat.exists and not item.stat.islnk
-  loop_control:
-    label: "~/.config/{{item.item.path | basename}}"
-
-- name: ~/.config/
-  file:
-    src: "{{item.path}}"
-    dest: "~/.config/{{item.path | basename}}"
-    state: link
-  loop: "{{ dot_config.files }}"
-  loop_control:
-    label: "~/.config/{{item.path | basename}}"
-
-- name: .gitconfig
-  file:
-    src: "~/.config/.gitconfig"
-    dest: "~/.gitconfig"
-    state: link
-
-- name: .gitignore_global
-  file:
-    src: "~/.config/.gitignore_global"
-    dest: "~/.gitignore_global"
-    state: link
+# Symlink dotfiles bằng scripts/link.sh: một nguồn duy nhất cho cả ./install.sh lẫn Ansible.
+# Đồ có sẵn được chuyển vào ~/.dotfiles-backup/, không bị xoá.
+- name: Link dotfiles
+  command: "{{ dot_repo_root }}/scripts/link.sh apply"
+  register: dot_link
+  changed_when: "'changed=0' not in dot_link.stdout"
