@@ -8,13 +8,14 @@
 # Các bước:
 #   brew   Homebrew + mọi thứ trong Brewfile
 #   link   symlink config/ vào ~ (scripts/link.sh; đồ có sẵn được backup, không bị xoá)
+#   hooks  bật hook gitleaks (.githooks) cho repo dotfiles này: chặn commit / push chứa secret
 #   mise   runtime (go, java, node, python...) theo config/mise/config.toml
 #   nvim   plugin Neovim (vim.pack), công cụ Mason (LSP, formatter, debugger), parser treesitter
 
 set -euo pipefail
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-STEPS="brew link mise nvim"
+STEPS="brew link hooks mise nvim"
 
 have() {
   command -v "$1" &>/dev/null
@@ -38,6 +39,11 @@ step_brew() {
 
 step_link() {
   "$DIR/scripts/link.sh" apply
+}
+
+step_hooks() {
+  git -C "$DIR" config core.hooksPath .githooks
+  have gitleaks || echo "chưa có gitleaks (brew install gitleaks): hook chỉ cảnh báo, chưa kiểm tra secret"
 }
 
 step_mise() {
@@ -82,7 +88,7 @@ EOF
 }
 
 usage() {
-  sed -n '2,13p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+  sed -n '2,14p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 main() {

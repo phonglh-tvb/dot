@@ -1,0 +1,16 @@
+#!/bin/bash
+# Chặn commit chứa secret (gitleaks). Bỏ qua có chủ đích: SKIP_GITLEAKS=1 git commit ...
+set -euo pipefail
+
+[ "${SKIP_GITLEAKS:-}" = 1 ] && exit 0
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "pre-commit: chưa có gitleaks nên KHÔNG kiểm tra secret (brew install gitleaks)" >&2
+  exit 0
+fi
+
+args=(git --staged --redact --no-banner)
+config="$(git rev-parse --show-toplevel)/.gitleaks.toml"
+[ -f "$config" ] && args+=(--config "$config")
+
+exec gitleaks "${args[@]}"

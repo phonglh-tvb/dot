@@ -1,3 +1,6 @@
+## Không lưu vào lịch sử những lệnh chứa khoá AWS, token GitHub / Slack, Stripe... (mặc định đã bật, ghi ra cho rõ)
+secrets_filter = true
+
 [theme]
 name = "mocha/catppuccin-mocha-lavender"
 [dotfiles]

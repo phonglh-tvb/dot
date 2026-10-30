@@ -16,6 +16,7 @@ cd ~/workspace/work/dot
 |---|---|
 | `brew` | cài Homebrew nếu chưa có, rồi mọi thứ trong `Brewfile` |
 | `link` | symlink `config/` vào máy ([scripts/link.sh](scripts/link.sh)) |
+| `hooks` | bật hook gitleaks cho repo này ([docs/secrets.md](docs/secrets.md)) |
 | `mise` | runtime (go, java, node, python, ruby, dotnet) theo `config/mise/config.toml` |
 | `nvim` | plugin Neovim (đúng commit trong `nvim-pack-lock.json`), công cụ Mason, parser treesitter. Lần đầu tải vài GB nên khá lâu |
 
@@ -30,6 +31,9 @@ config/            mọi cấu hình, link vào máy theo quy ước bên dướ
   .gitconfig       -> ~/.gitconfig
   .gitignore_global
 scripts/link.sh    symlink an toàn (xem dưới)
+scripts/secrets.sh kiểm tra / quản lý secret (1Password, sops + age)
+.githooks/         hook gitleaks chặn commit / push chứa secret
+docs/secrets.md    cách giữ secret ngoài repo
 install.sh         dựng máy mới theo từng bước
 dump.sh            ghi lại Brewfile từ những gì đang cài
 Brewfile           formula + cask
@@ -70,6 +74,10 @@ nvim-pack-lock.json      commit của từng plugin (đưa vào git)
 - Cập nhật plugin: `:lua vim.pack.update()`, xem thay đổi, `:write` để chấp nhận, rồi commit lockfile. Hoàn lại: `git checkout HEAD -- nvim-pack-lock.json` rồi `:restart`.
 - Công cụ (LSP, formatter, debug adapter) khai báo một chỗ trong `lua/configs/tools.lua`; `mason-tool-installer` tự cài những gói còn thiếu. Cài lại bằng tay: `:MasonToolsInstall`.
 - Cài plugin bị ngắt giữa chừng: khởi động sau sẽ tự xoá thư mục hỏng và cài lại.
+
+## Secret
+
+Repo public, nên không chứa giá trị secret, chỉ có công cụ và tham chiếu: 1Password (`op`) là nguồn chính, sops + age cho file mã hoá, gitleaks chặn lỡ tay. Xem [docs/secrets.md](docs/secrets.md); `scripts/secrets.sh check` cho biết máy đang ở đâu.
 
 ## Ansible (tuỳ chọn)
 
