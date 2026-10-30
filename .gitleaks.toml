@@ -1,0 +1,12 @@
+# Dùng luật mặc định của gitleaks, chỉ thêm ngoại lệ cho giá trị giả đã biết.
+title = "dotfiles"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Mật khẩu dev giả trong file mẫu / compose"
+paths = [
+  '''docker/env\.example''',
+  '''docker/docker-compose\.yml''',
+]
