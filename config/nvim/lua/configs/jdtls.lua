@@ -1,4 +1,4 @@
--- Cấu hình nvim-jdtls (plugins/java.lua gọi start() cho mỗi buffer java)
+-- Cấu hình nvim-jdtls (autocmds.lua gọi start() cho mỗi buffer java)
 local M = {}
 
 local function mason(path)
@@ -38,7 +38,7 @@ local function on_attach(_, bufnr)
   local jdtls = require "jdtls"
 
   local function map(mode, lhs, rhs, desc)
-    vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = "Java " .. desc })
+    vim.keymap.set(mode, lhs, rhs, { buf = bufnr, desc = "Java " .. desc })
   end
 
   map("n", "<leader>jo", jdtls.organize_imports, "organize imports")
@@ -60,10 +60,12 @@ local function on_attach(_, bufnr)
   require("jdtls.dap").setup_dap_main_class_configs()
 end
 
-function M.start()
+-- bufnr: buffer của sự kiện FileType (lúc khởi động "buffer hiện tại" chưa chắc là buffer java)
+function M.start(bufnr)
   local jdtls = require "jdtls"
+  bufnr = bufnr or vim.api.nvim_get_current_buf()
 
-  local root = vim.fs.root(0, {
+  local root = vim.fs.root(bufnr, {
     "mvnw", "gradlew", "settings.gradle", "settings.gradle.kts", "pom.xml", "build.gradle", "build.gradle.kts", ".git",
   }) or vim.fn.getcwd()
 
@@ -85,14 +87,12 @@ function M.start()
     table.insert(cmd, "--jvm-arg=-javaagent:" .. lombok)
   end
 
-  local capabilities = vim.tbl_deep_extend("force", {}, require("nvchad.configs.lspconfig").capabilities)
-
-  jdtls.start_or_attach {
+  jdtls.start_or_attach({
     name = "jdtls",
     cmd = cmd,
     cmd_env = runner and { JAVA_HOME = runner.path } or nil,
     root_dir = root,
-    capabilities = capabilities,
+    capabilities = vim.lsp.protocol.make_client_capabilities(),
     on_attach = on_attach,
     init_options = {
       bundles = bundles(),
@@ -110,7 +110,7 @@ function M.start()
         inlayHints = { parameterNames = { enabled = "literals" } },
       },
     },
-  }
+  }, nil, { bufnr = bufnr })
 end
 
 return M
