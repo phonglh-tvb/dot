@@ -34,6 +34,8 @@ scripts/link.sh    symlink an toàn (xem dưới)
 scripts/secrets.sh kiểm tra / quản lý secret (1Password, sops + age)
 .githooks/         hook gitleaks chặn commit / push chứa secret
 docs/secrets.md    cách giữ secret ngoài repo
+AGENTS.md          hướng dẫn cho AI agent: phân tích yêu cầu, nhánh, kiểm chứng, PR (CLAUDE.md trỏ tới đây)
+.github/           mẫu mô tả PR
 install.sh         dựng máy mới theo từng bước
 dump.sh            ghi lại Brewfile từ những gì đang cài
 Brewfile           formula + cask
