@@ -5,9 +5,9 @@ return {
     opts = require "configs.conform",
   },
 
-  -- These are some examples, uncomment them if you want to see them work!
   {
     "neovim/nvim-lspconfig",
+    dependencies = { "b0o/SchemaStore.nvim" },
     config = function()
       require "configs.lspconfig"
     end,
@@ -17,12 +17,21 @@ return {
   -- { import = "nvchad.blink.lazyspec" },
 
   {
-  	"nvim-treesitter/nvim-treesitter",
-  	opts = {
-  		ensure_installed = {
-  			"vim", "lua", "vimdoc",
-       "html", "css", "typescript", "php", "python"
-  		},
-  	},
+    "nvim-treesitter/nvim-treesitter",
+    opts = {
+      ensure_installed = {
+        "vim", "lua", "luadoc", "vimdoc", "printf",
+        -- web / frontend
+        "html", "css", "scss", "javascript", "typescript", "tsx", "json", "yaml", "toml", "prisma",
+        -- backend
+        "python", "go", "gomod", "gosum", "gowork", "gotmpl", "rust", "java", "c", "php",
+        -- Odoo: view / QWeb là xml
+        "xml",
+        -- tài liệu
+        "markdown", "markdown_inline", "latex", "bibtex", "typst",
+        -- khác
+        "bash", "dockerfile", "sql", "regex", "diff", "gitcommit", "git_rebase", "gitignore", "ini", "make",
+      },
+    },
   },
 }

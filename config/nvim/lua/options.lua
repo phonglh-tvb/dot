@@ -7,6 +7,10 @@ local o = vim.o
 local g = vim.g
 -- o.cursorlineopt ='both' -- to enable cursorline!
 
+-- Template html/template của Go: parser gotmpl không inject HTML nên soạn như HTML
+-- (highlight, emmet, tự đóng tag đều dùng được)
+vim.filetype.add { extension = { gohtml = "html" } }
+
 opt.number = true
 opt.softtabstop = 2
 opt.tabstop = 4
