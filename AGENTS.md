@@ -51,7 +51,7 @@ Ghi lại lệnh đã chạy và kết quả thật vào PR. Chưa kiểm đư�
 |---|---|
 | Script shell (`*.sh`, `.githooks/`) | `bash -n`; `shellcheck` nếu máy có. Viết cho bash 3.2 của macOS (không `mapfile`, `${var,,}`, mảng kết hợp). Script ghi vào `~` thì chạy thử với `HOME=$(mktemp -d)`. Chạy lần hai phải vô hại (idempotent). Hàm `usage` của script in dòng đầu file bằng `sed -n 'a,bp'`: thêm hay bớt dòng ghi chú ở đầu thì sửa lại khoảng dòng đó. |
 | Neovim (`config/nvim`) | Không thử trên `~/.config/nvim` thật. Dùng `NVIM_APPNAME=nvim-test` với `~/.config/nvim-test` là symlink tạm tới `config/nvim` của worktree, rồi `nvim --headless` và `:checkhealth vim.deprecated`. Dữ liệu tách theo `NVIM_APPNAME` nên plugin cài lại từ lockfile (mạng chậm, cần kiên nhẫn). Xong thì xoá config, data, state, cache của `nvim-test`. Format Lua bằng stylua theo `stylua.toml`. |
-| Brewfile | `brew bundle check --file=Brewfile`. Thêm một gói thì sửa tay, giữ thứ tự theo tên ngắn. `./dump.sh` ghi **đè cả file** theo những gì đang cài trên máy, chỉ dùng khi người dùng muốn đồng bộ, rồi đọc `git diff Brewfile`. |
+| Brewfile* | `brew bundle check --file=<file>` cho từng file, rồi `scripts/drift.sh` (chỉ đọc) để thấy máy lệch khai báo ở đâu. Thêm một gói thì sửa tay đúng nhóm, giữ thứ tự theo tên ngắn. Không có lệnh ghi đè Brewfile từ máy. |
 | `install.sh`, `scripts/link.sh` | `./install.sh --list`, `scripts/link.sh --dry-run` và `status`. |
 | Hook, secret | `scripts/secrets.sh scan`. Thử hook trong repo nháp với token **giả**, không bao giờ dùng secret thật. |
 | Tài liệu | Chạy thử các lệnh trong đó. |
@@ -81,7 +81,7 @@ Phạm vi: Homebrew (`brew outdated`), runtime mise (`mise outdated`), plugin Ne
 
 | Việc | File |
 |---|---|
-| Thêm gói Homebrew hay ứng dụng | `Brewfile` |
+| Thêm gói Homebrew hay ứng dụng | `Brewfile` (công cụ dòng lệnh), `Brewfile.devops` (cloud, k8s, giám sát), `Brewfile.apps` (ứng dụng đồ hoạ, font) |
 | Thêm runtime hoặc đổi phiên bản | `config/mise/config.toml` |
 | Thêm cấu hình cho một công cụ | `config/<tên>/`, rồi `scripts/link.sh`. Mục nào bắt đầu bằng `.` thì link vào `~/<tên>`, còn lại vào `~/.config/<tên>` |
 | Plugin Neovim | `config/nvim/lua/plugins.lua` (`vim.pack.add`), cấu hình ở `lua/configs/`, rồi cập nhật `nvim-pack-lock.json` |

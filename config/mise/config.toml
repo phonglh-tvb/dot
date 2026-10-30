@@ -3,5 +3,6 @@ dotnet = "latest"
 go = "latest"
 java = ["temurin-21", "temurin-25"]
 node = "latest"
+pnpm = "latest"
 python = "latest"
 ruby = "latest"

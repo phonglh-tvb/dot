@@ -4,18 +4,20 @@
 #   ./install.sh               chạy tất cả các bước theo thứ tự
 #   ./install.sh link nvim     chỉ chạy các bước nêu tên
 #   ./install.sh --list        liệt kê các bước
+#   DOT_PROFILES="devops" ./install.sh brew    chọn nhóm Brewfile (mặc định "devops apps"; rỗng = chỉ lõi)
 #
 # Các bước:
-#   brew   Homebrew + mọi thứ trong Brewfile
+#   brew   Homebrew + Brewfile (lõi), rồi Brewfile.<nhóm> theo DOT_PROFILES
 #   link   symlink config/ vào ~ (scripts/link.sh; đồ có sẵn được backup, không bị xoá)
 #   hooks  bật hook gitleaks (.githooks) cho repo dotfiles này: chặn commit / push chứa secret
 #   mise   runtime (go, java, node, python...) theo config/mise/config.toml
+#   rust   rustup + toolchain stable, chỉ khi chưa có ~/.cargo/bin/rustup
 #   nvim   plugin Neovim (vim.pack), công cụ Mason (LSP, formatter, debugger), parser treesitter
 
 set -euo pipefail
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-STEPS="brew link hooks mise nvim"
+STEPS="brew link hooks mise rust nvim"
 
 have() {
   command -v "$1" &>/dev/null
@@ -33,8 +35,17 @@ step_brew() {
   # Đưa brew vào PATH của phiên này (Apple Silicon mặc định)
   have brew || eval "$(/opt/homebrew/bin/brew shellenv)"
 
-  # Cài mọi thứ trong Brewfile (formula + cask, tự giải quyết phụ thuộc)
+  # Brewfile là phần lõi; Brewfile.<nhóm> cài thêm theo DOT_PROFILES (đặt rỗng để chỉ cài lõi)
+  local profile
+  for profile in ${DOT_PROFILES-devops apps}; do
+    [ -f "$DIR/Brewfile.$profile" ] || die "không có nhóm '$profile' (có: $(find "$DIR" -maxdepth 1 -name 'Brewfile.*' | sed 's#.*/Brewfile\.##' | sort | tr '\n' ' '))"
+  done
+
+  # formula + cask, tự giải quyết phụ thuộc
   brew bundle install --file="$DIR/Brewfile"
+  for profile in ${DOT_PROFILES-devops apps}; do
+    brew bundle install --file="$DIR/Brewfile.$profile"
+  done
 }
 
 step_link() {
@@ -51,6 +62,16 @@ step_mise() {
   [ -e "${XDG_CONFIG_HOME:-$HOME/.config}/mise/config.toml" ] || die "chưa có ~/.config/mise; chạy './install.sh link' trước"
 
   mise install
+}
+
+step_rust() {
+  if [ -x "$HOME/.cargo/bin/rustup" ]; then
+    echo "rustup đã có"
+    return
+  fi
+
+  # --no-modify-path: PATH do config/fish/conf.d/rustup.fish và config/.zshenv lo
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
 }
 
 step_nvim() {
@@ -88,7 +109,7 @@ EOF
 }
 
 usage() {
-  sed -n '2,14p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+  sed -n '2,16p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 main() {

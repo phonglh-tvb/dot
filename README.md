@@ -14,10 +14,11 @@ cd ~/workspace/work/dot
 
 | Bước | Làm gì |
 |---|---|
-| `brew` | cài Homebrew nếu chưa có, rồi mọi thứ trong `Brewfile` |
+| `brew` | cài Homebrew nếu chưa có, rồi `Brewfile` (lõi) và các nhóm `Brewfile.devops`, `Brewfile.apps`. Chọn nhóm bằng `DOT_PROFILES`, ví dụ `DOT_PROFILES="devops" ./install.sh brew`; để rỗng thì chỉ cài lõi |
 | `link` | symlink `config/` vào máy ([scripts/link.sh](scripts/link.sh)) |
 | `hooks` | bật hook gitleaks cho repo này ([docs/secrets.md](docs/secrets.md)) |
 | `mise` | runtime (go, java, node, python, ruby, dotnet) theo `config/mise/config.toml` |
+| `rust` | rustup + toolchain stable, chỉ khi chưa có `~/.cargo/bin/rustup` |
 | `nvim` | plugin Neovim (đúng commit trong `nvim-pack-lock.json`), công cụ Mason, parser treesitter. Lần đầu tải vài GB nên khá lâu |
 
 Còn vài việc phải làm tay vì cần mật khẩu / đăng nhập (script nhắc lại ở cuối): đặt fish làm shell mặc định (`chsh`), `gh auth login`, khoá SSH để ký commit, `~/.gitconfig-personal`.
@@ -37,8 +38,10 @@ docs/secrets.md    cách giữ secret ngoài repo
 AGENTS.md          hướng dẫn cho AI agent: phân tích yêu cầu, nhánh, kiểm chứng, PR (CLAUDE.md trỏ tới đây)
 .github/           mẫu mô tả PR
 install.sh         dựng máy mới theo từng bước
-dump.sh            ghi lại Brewfile từ những gì đang cài
-Brewfile           formula + cask
+scripts/drift.sh   so máy với khai báo: cài mà chưa khai báo, khai báo mà chưa cài (chỉ đọc)
+Brewfile           phần lõi: công cụ dòng lệnh
+Brewfile.devops    cloud, Kubernetes, Terraform, giám sát
+Brewfile.apps      ứng dụng đồ hoạ và font (macOS)
 ansible/           role `dot` (gọi scripts/link.sh) và `pkg-security` (trivy, osv-scanner, socket)
 docker/            database dev (Postgres, Mongo, MySQL) và pkg-scanner
 ```
@@ -51,10 +54,12 @@ Quy ước link: mục trong `config/` bắt đầu bằng `.` thì link vào `~
 scripts/link.sh status     # xem link nào đúng / thiếu, không đổi gì
 scripts/link.sh            # tạo / sửa link
 scripts/link.sh unlink     # gỡ các link của repo này
-./dump.sh                  # cập nhật Brewfile (xem `git diff Brewfile` trước khi commit)
+scripts/drift.sh           # máy đang lệch khai báo ở đâu (Homebrew, mise), không đổi gì
 ```
 
 Thêm cấu hình mới: tạo `config/<tên>` rồi chạy `scripts/link.sh`.
+
+Thêm gói: sửa tay đúng file `Brewfile*` (giữ thứ tự theo tên ngắn trong từng nhóm), rồi `scripts/drift.sh` để chắc máy và khai báo đã khớp. Không còn lệnh ghi đè Brewfile từ máy, vì một máy cụ thể không nên quyết định cả danh sách.
 
 `link.sh` không bao giờ xoá đồ của bạn: file hay thư mục đang chiếm chỗ được chuyển vào `~/.dotfiles-backup/<thời gian>/` trước khi tạo link. Đích đã đúng thì bỏ qua nên chạy lại vô hại.
 

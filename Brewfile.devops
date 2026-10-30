@@ -1,0 +1,22 @@
+# Hạ tầng và vận hành: cloud, Kubernetes, Terraform, giám sát. Bỏ qua khi không cần: DOT_PROFILES="apps" ./install.sh brew
+# Hiện chưa có kubeconfig hay file .tf nào trên máy này; giữ ở đây để sẵn khi cần.
+
+tap "hashicorp/tap"
+
+brew "awscli"
+brew "caddy"
+brew "cloudflared"
+brew "eksctl"
+brew "grafana"
+brew "helm"
+brew "k9s"
+brew "kind"
+brew "kubernetes-cli"
+brew "kustomize"
+brew "prometheus"
+brew "hashicorp/tap/terraform"
+brew "terragrunt"
+
+cask "cloudflare-warp"
+cask "gcloud-cli"
+cask "tailscale-app"
