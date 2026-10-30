@@ -15,3 +15,4 @@ config/tmux/plugins/
 docker/.env
 config/fish/fish_variables
 .claude/settings.local.json
+config/.zcompdump*
