@@ -31,8 +31,8 @@ need() { # $1=lệnh $2=gói brew
   have "$1" || die "thiếu '$1' (brew install $2)"
 }
 
-perm_of() { # macOS dùng stat -f, Linux dùng stat -c
-  stat -f '%Lp' "$1" 2>/dev/null || stat -c '%a' "$1"
+perm_of() { # Linux dùng stat -c; macOS không có -c nên rơi sang stat -f (thử -f trước thì GNU in rác ra stdout)
+  stat -c '%a' "$1" 2>/dev/null || stat -f '%Lp' "$1"
 }
 
 usage() {
