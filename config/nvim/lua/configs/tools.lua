@@ -25,6 +25,7 @@ return {
   "marksman",
   "texlab",
   "tinymist",
+  "clangd",
 
   -- Formatter / linter
   "stylua",
