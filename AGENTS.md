@@ -53,6 +53,8 @@ Ghi lại lệnh đã chạy và kết quả thật vào PR. Chưa kiểm đư�
 | Neovim (`config/nvim`) | Không thử trên `~/.config/nvim` thật. Dùng `NVIM_APPNAME=nvim-test` với `~/.config/nvim-test` là symlink tạm tới `config/nvim` của worktree, rồi `nvim --headless` và `:checkhealth vim.deprecated`. Dữ liệu tách theo `NVIM_APPNAME` nên plugin cài lại từ lockfile (mạng chậm, cần kiên nhẫn). Xong thì xoá config, data, state, cache của `nvim-test`. Format Lua bằng `stylua config/nvim` theo `stylua.toml` (CI chạy `stylua --check`); bảng cần giữ xếp hàng thì thêm `-- stylua: ignore` phía trên. Sau khi format, so bytecode trước/sau nếu muốn chắc không đổi hành vi. |
 | Brewfile* | `brew bundle check --file=<file>` cho từng file, rồi `scripts/drift.sh` (chỉ đọc) để thấy máy lệch khai báo ở đâu. Thêm một gói thì sửa tay đúng nhóm, giữ thứ tự theo tên ngắn. Không có lệnh ghi đè Brewfile từ máy. |
 | `install.sh`, `scripts/link.sh` | `./install.sh --list`, `scripts/link.sh --dry-run` và `status`. |
+| Dockerfile, `scripts/docker-clean.sh` | `hadolint <file>` (CI chạy; ngoại lệ có lý do ở `.hadolint.yaml`). Thử `docker-clean.sh` ở chế độ liệt kê trên docker thật (chỉ đọc); `--apply` chỉ thử bằng stub `docker` trong `PATH`, vì docker của người dùng chứa dữ liệu (Postgres, Mongo...). |
+| `lima/dev.yaml`, bước `lima` | `limactl validate lima/dev.yaml`; bước `lima` thử bằng stub `limactl`/`docker`. Không tạo, dừng hay khởi động lại VM `dev` đang chạy. |
 | Hook, secret | `scripts/secrets.sh scan`. Thử hook trong repo nháp với token **giả**, không bao giờ dùng secret thật. |
 | Tài liệu | Chạy thử các lệnh trong đó. |
 
@@ -94,6 +96,9 @@ Phạm vi: Homebrew (`brew outdated`), runtime mise (`mise outdated`), plugin Ne
 | Bước cài mới | `install.sh`: thêm vào `STEPS`, hàm `step_<tên>`, ghi chú đầu file, bảng trong README |
 | Secret, hook | `scripts/secrets.sh`, `.githooks/`, `.gitleaks.toml`, `docs/secrets.md` |
 | Database dev, quét gói | `docker/`, `ansible/` |
+| VM Lima chạy Docker | `lima/dev.yaml` (chỉ là khuôn tạo VM; sửa không đổi VM đang chạy) |
+| Dọn Docker | `scripts/docker-clean.sh` |
+| Mặc định SSH dùng chung | `config/ssh/defaults.conf` (không bao giờ đưa host, IP, khoá vào repo) |
 
 ## Quy ước code
 

@@ -15,6 +15,7 @@ cd ~/workspace/work/dot
 | Bước | Làm gì |
 |---|---|
 | `brew` | cài Homebrew nếu chưa có, rồi `Brewfile` (lõi) và các nhóm `Brewfile.devops`, `Brewfile.apps`. Chọn nhóm bằng `DOT_PROFILES`, ví dụ `DOT_PROFILES="devops" ./install.sh brew`; để rỗng thì chỉ cài lõi |
+| `lima` | VM Lima `dev` chạy Docker (thay Docker Desktop) theo [lima/dev.yaml](lima/dev.yaml), rồi docker context `dev`. VM hoặc context đã có thì giữ nguyên, không khởi động lại gì |
 | `link` | symlink `config/` vào máy ([scripts/link.sh](scripts/link.sh)) |
 | `hooks` | bật hook gitleaks cho repo này ([docs/secrets.md](docs/secrets.md)) |
 | `mise` | runtime (go, java, node, python, ruby, dotnet) theo `config/mise/config.toml` |
@@ -40,11 +41,13 @@ AGENTS.md          hướng dẫn cho AI agent: phân tích yêu cầu, nhánh, 
 .github/           mẫu mô tả PR và CI (workflows/ci.yml)
 install.sh         dựng máy mới theo từng bước
 scripts/drift.sh   so máy với khai báo: cài mà chưa khai báo, khai báo mà chưa cài (chỉ đọc)
+scripts/docker-clean.sh   liệt kê (và với --apply, dọn) Docker; không bao giờ tự xoá volume có tên
 Brewfile           phần lõi: công cụ dòng lệnh
 Brewfile.devops    cloud, Kubernetes, Terraform, giám sát
 Brewfile.apps      ứng dụng đồ hoạ và font (macOS)
 ansible/           role `dot` (gọi scripts/link.sh) và `pkg-security` (trivy, osv-scanner, socket)
 docker/            database dev (Postgres, Mongo, MySQL) và pkg-scanner
+lima/dev.yaml      cấu hình VM Lima chạy Docker (macOS)
 ```
 
 Quy ước link: mục trong `config/` bắt đầu bằng `.` thì link vào `~/<tên>`, còn lại link vào `~/.config/<tên>`. Vì là symlink nên sửa `~/.config/nvim/...` chính là sửa file trong repo; chỉ việc `git commit`.
@@ -56,6 +59,7 @@ scripts/link.sh status     # xem link nào đúng / thiếu, không đổi gì
 scripts/link.sh            # tạo / sửa link
 scripts/link.sh unlink     # gỡ các link của repo này
 scripts/drift.sh           # máy đang lệch khai báo ở đâu (Homebrew, mise), không đổi gì
+scripts/docker-clean.sh    # Docker đang chiếm gì, cái nào dọn được (chỉ liệt kê; thêm --apply để dọn)
 ```
 
 Thêm cấu hình mới: tạo `config/<tên>` rồi chạy `scripts/link.sh`.
@@ -66,7 +70,7 @@ Thêm gói: sửa tay đúng file `Brewfile*` (giữ thứ tự theo tên ngắn
 
 ## CI
 
-Mỗi PR và mỗi lần đẩy lên `master` chạy [.github/workflows/ci.yml](.github/workflows/ci.yml): `shellcheck`, `shfmt`, `stylua --check`, `actionlint`, gitleaks (file và lịch sử); rồi trên cả Ubuntu và macOS dựng cấu hình trong HOME giả (`link.sh` chạy hai lần phải không đổi gì), kiểm cú pháp zsh / fish, kiểm tmux chọn đúng lệnh clipboard. Chạy cùng các lệnh đó trên máy trước khi đẩy; công cụ có sẵn trong Brewfile.
+Mỗi PR và mỗi lần đẩy lên `master` chạy [.github/workflows/ci.yml](.github/workflows/ci.yml): `shellcheck`, `shfmt`, `stylua --check`, `actionlint`, gitleaks (file và lịch sử); `hadolint` cho Dockerfile; rồi trên cả Ubuntu và macOS dựng cấu hình trong HOME giả (`link.sh` chạy hai lần phải không đổi gì), kiểm cú pháp zsh / fish, kiểm tmux chọn đúng lệnh clipboard. Chạy cùng các lệnh đó trên máy trước khi đẩy; công cụ có sẵn trong Brewfile.
 
 ## Shell
 
@@ -92,6 +96,16 @@ nvim-pack-lock.json      commit của từng plugin (đưa vào git)
 - Cập nhật plugin: `:lua vim.pack.update()`, xem thay đổi, `:write` để chấp nhận, rồi commit lockfile. Hoàn lại: `git checkout HEAD -- nvim-pack-lock.json` rồi `:restart`.
 - Công cụ (LSP, formatter, debug adapter) khai báo một chỗ trong `lua/configs/tools.lua`; `mason-tool-installer` tự cài những gói còn thiếu. Cài lại bằng tay: `:MasonToolsInstall`.
 - Cài plugin bị ngắt giữa chừng: khởi động sau sẽ tự xoá thư mục hỏng và cài lại.
+
+## Docker và Lima
+
+Trên macOS Docker chạy trong VM Lima `dev` (không dùng Docker Desktop); cấu hình VM nằm ở [lima/dev.yaml](lima/dev.yaml) và `./install.sh lima` dựng VM cùng docker context `dev` trên máy mới. Sửa file đó không đổi VM đang chạy (muốn áp dụng thì `limactl edit dev` hoặc tạo lại VM, việc này khởi động lại mọi container nên làm có chủ đích).
+
+`scripts/docker-clean.sh` cho biết Docker đang giữ gì: container đã dừng, image không tên, volume ẩn danh, build cache, và riêng danh sách volume có tên mà không container nào dùng. Mặc định chỉ liệt kê. `--apply` xoá phần an toàn (kèm xác nhận), còn volume có tên chứa dữ liệu nên luôn để bạn tự `docker volume rm`. Công cụ đi kèm trong Brewfile: `lazydocker` (giao diện terminal), `dive` (xem từng layer của image), `hadolint` (kiểm Dockerfile, CI chạy với [.hadolint.yaml](.hadolint.yaml)), `oha` (thử tải HTTP).
+
+## SSH
+
+Repo chỉ giữ phần mặc định dùng chung ([config/ssh/defaults.conf](config/ssh/defaults.conf): `AddKeysToAgent`, `UseKeychain` có `IgnoreUnknown` nên chạy được cả trên Linux, `ServerAliveInterval`); host, IP, user và khoá của từng máy ở `~/.ssh` và không bao giờ commit. `link.sh` không đụng `~/.ssh`. Muốn dùng thì tự thêm hai dòng vào **cuối** `~/.ssh/config` (xem chú thích trong file; `Match all` cần thiết để Include không bị gắn vào khối `Host` phía trên, và đặt ở cuối để host cụ thể thắng mặc định).
 
 ## Secret
 
