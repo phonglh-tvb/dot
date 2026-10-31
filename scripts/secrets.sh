@@ -51,7 +51,8 @@ cmd_check() {
     if have "$t"; then row "$t" "có"; else row "$t" "chưa cài"; fi
   done
   if have op; then
-    if op whoami >/dev/null 2>&1; then row "op đăng nhập" "rồi"; else row "op đăng nhập" "chưa (mở app 1Password > Settings > Developer > tích hợp CLI)"; fi
+    # Với tích hợp qua app 1Password, `op whoami` luôn báo chưa đăng nhập dù `op` dùng được; thử một lệnh thật
+    if op whoami >/dev/null 2>&1 || op vault list --format json >/dev/null 2>&1; then row "op đăng nhập" "rồi"; else row "op đăng nhập" "chưa (mở app 1Password > Settings > Developer > tích hợp CLI)"; fi
   fi
 
   echo "Khoá age (sops)"
