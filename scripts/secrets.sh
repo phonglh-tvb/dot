@@ -155,10 +155,28 @@ EOF
   cmd_hooks "$dir"
 }
 
+# sops chỉ tìm .sops.yaml từ thư mục hiện tại đi lên, nên chạy từ chỗ khác thì báo "config file not found".
+# In đường dẫn .sops.yaml gần nhất tính từ thư mục chứa file $1.
+sops_config_for() {
+  local dir
+  dir="$(cd "$(dirname "$1")" 2>/dev/null && pwd)" || return 1
+  while [ ! -f "$dir/.sops.yaml" ]; do
+    [ "$dir" != / ] || return 1
+    dir="$(dirname "$dir")"
+  done
+  echo "$dir/.sops.yaml"
+}
+
 cmd_edit() {
   need sops sops
   [ $# -ge 1 ] || die "usage: secrets.sh edit <file.enc.*>"
-  sops "$@"
+  # file mới chưa có metadata sops nên cần luật tạo trong .sops.yaml
+  local cfg
+  if [ $# -eq 1 ] && cfg="$(sops_config_for "$1")"; then
+    sops --config "$cfg" "$1"
+  else
+    sops "$@"
+  fi
 }
 
 cmd_encrypt() {
@@ -166,10 +184,16 @@ cmd_encrypt() {
   [ $# -eq 1 ] || die "usage: secrets.sh encrypt <file.dec.*>"
   case "$1" in *.dec.*) ;; *) die "tên file phải có '.dec.', ví dụ app.dec.yaml" ;; esac
 
-  local out="${1/.dec./.enc.}"
+  local out="${1/.dec./.enc.}" cfg tmp
   [ ! -e "$out" ] || die "$out đã tồn tại, không ghi đè"
-  # shellcheck disable=SC2094 # --filename-override chỉ chọn luật trong .sops.yaml, không đọc $out
-  sops encrypt --filename-override "$out" "$1" >"$out"
+  cfg="$(sops_config_for "$1")" || die "không thấy .sops.yaml ở thư mục của $1 hay thư mục cha (chạy 'secrets.sh init' trước)"
+  # ghi ra file tạm: mã hoá lỗi thì không để lại $out rỗng, vì nó sẽ chặn lần chạy sau
+  tmp="$(mktemp "$out.XXXXXX")"
+  if ! sops --config "$cfg" encrypt --filename-override "$out" "$1" >"$tmp"; then
+    rm -f "$tmp"
+    die "mã hoá $1 thất bại, không tạo $out"
+  fi
+  mv "$tmp" "$out"
   echo "đã mã hoá -> $out"
   echo "file gốc $1 vẫn còn, hãy xoá sau khi kiểm tra: rm \"$1\""
 }
