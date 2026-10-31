@@ -17,6 +17,7 @@ brew "prometheus"
 brew "hashicorp/tap/terraform"
 brew "terragrunt"
 
-cask "cloudflare-warp"
-cask "gcloud-cli"
-cask "tailscale-app"
+# cask chỉ có trên macOS; trên Linux cài các công cụ này theo hướng dẫn của từng hãng
+cask "cloudflare-warp" if OS.mac?
+cask "gcloud-cli" if OS.mac?
+cask "tailscale-app" if OS.mac?

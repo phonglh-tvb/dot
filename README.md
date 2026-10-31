@@ -1,6 +1,6 @@
 # dotfiles
 
-Cấu hình máy macOS (Apple Silicon): shell, terminal, editor, công cụ dev. Dựng máy mới bằng một lệnh; chạy lại bao nhiêu lần cũng được.
+Cấu hình máy macOS (Apple Silicon) hoặc Linux (Debian, Ubuntu, Pop!_OS): shell, terminal, editor, công cụ dev. Dựng máy mới bằng một lệnh; chạy lại bao nhiêu lần cũng được.
 
 ## Cài mới
 
@@ -10,13 +10,15 @@ cd ~/workspace/work/dot
 ./install.sh
 ```
 
-`./install.sh` chạy lần lượt các bước dưới đây; muốn chạy riêng thì nêu tên, ví dụ `./install.sh link nvim`.
+`./install.sh` chạy lần lượt các bước dưới đây; muốn chạy riêng thì nêu tên, ví dụ `./install.sh link nvim`. `./install.sh --list` cho biết danh sách bước trên máy này (Linux có thêm `apt` và `fonts`).
 
 | Bước | Làm gì |
 |---|---|
-| `brew` | cài Homebrew nếu chưa có, rồi `Brewfile` (lõi) và các nhóm `Brewfile.devops`, `Brewfile.apps`. Chọn nhóm bằng `DOT_PROFILES`, ví dụ `DOT_PROFILES="devops" ./install.sh brew`; để rỗng thì chỉ cài lõi |
+| `apt` | (chỉ Linux) gói hệ thống trong [Aptfile](Aptfile): bộ build, thứ Homebrew cần, clipboard. Cần `sudo` |
+| `brew` | cài Homebrew (Linuxbrew trên Linux) nếu chưa có, rồi `Brewfile` (lõi) và các nhóm `Brewfile.devops`, `Brewfile.apps`. Chọn nhóm bằng `DOT_PROFILES`, ví dụ `DOT_PROFILES="devops" ./install.sh brew`; để rỗng thì chỉ cài lõi. Mặc định macOS cài cả `devops` và `apps`, Linux chỉ `devops` (`apps` toàn cask, chỉ có trên macOS) |
 | `link` | symlink `config/` vào máy ([scripts/link.sh](scripts/link.sh)) |
 | `hooks` | bật hook gitleaks cho repo này ([docs/secrets.md](docs/secrets.md)) |
+| `fonts` | (chỉ Linux) JetBrainsMono và MartianMono Nerd Font vào `~/.local/share/fonts`, bản ghim kèm checksum ([scripts/fonts.sh](scripts/fonts.sh)); macOS dùng cask |
 | `mise` | runtime (go, java, node, python, ruby, dotnet) theo `config/mise/config.toml` |
 | `rust` | rustup + toolchain stable, chỉ khi chưa có `~/.cargo/bin/rustup` |
 | `nvim` | plugin Neovim (đúng commit trong `nvim-pack-lock.json`), công cụ Mason, parser treesitter. Lần đầu tải vài GB nên khá lâu |
@@ -40,9 +42,11 @@ AGENTS.md          hướng dẫn cho AI agent: phân tích yêu cầu, nhánh, 
 .github/           mẫu mô tả PR và CI (workflows/ci.yml)
 install.sh         dựng máy mới theo từng bước
 scripts/drift.sh   so máy với khai báo: cài mà chưa khai báo, khai báo mà chưa cài (chỉ đọc)
+scripts/fonts.sh   Nerd Font cho Linux
 Brewfile           phần lõi: công cụ dòng lệnh
 Brewfile.devops    cloud, Kubernetes, Terraform, giám sát
 Brewfile.apps      ứng dụng đồ hoạ và font (macOS)
+Aptfile            gói hệ thống cho Linux (bước apt)
 ansible/           role `dot` (gọi scripts/link.sh) và `pkg-security` (trivy, osv-scanner, socket)
 docker/            database dev (Postgres, Mongo, MySQL) và pkg-scanner
 ```
@@ -66,13 +70,22 @@ Thêm gói: sửa tay đúng file `Brewfile*` (giữ thứ tự theo tên ngắn
 
 ## CI
 
-Mỗi PR và mỗi lần đẩy lên `master` chạy [.github/workflows/ci.yml](.github/workflows/ci.yml): `shellcheck`, `shfmt`, `stylua --check`, `actionlint`, gitleaks (file và lịch sử); rồi trên cả Ubuntu và macOS dựng cấu hình trong HOME giả (`link.sh` chạy hai lần phải không đổi gì), kiểm cú pháp zsh / fish, kiểm tmux chọn đúng lệnh clipboard. Chạy cùng các lệnh đó trên máy trước khi đẩy; công cụ có sẵn trong Brewfile.
+Mỗi PR và mỗi lần đẩy lên `master` chạy [.github/workflows/ci.yml](.github/workflows/ci.yml): `shellcheck`, `shfmt`, `stylua --check`, `actionlint`, gitleaks (file và lịch sử); rồi trên cả Ubuntu và macOS dựng cấu hình trong HOME giả (`link.sh` chạy hai lần phải không đổi gì), kiểm cú pháp zsh / fish, kiểm tmux chọn đúng lệnh clipboard; thêm job `install-linux` cài thật apt + Linuxbrew + font trên Ubuntu rồi đối chiếu bằng `drift.sh`. Chạy cùng các lệnh đó trên máy trước khi đẩy; công cụ có sẵn trong Brewfile.
 
 ## Shell
 
 Shell tương tác chính là fish (`config/fish`). Zsh vẫn có cấu hình tối thiểu vì công cụ và IDE hay chạy zsh: `.zprofile` nạp Homebrew và `mise` (shims, nên `node`, `go`... đúng bản ở mọi nơi), `.zshrc` chỉ có prompt starship, atuin, zoxide, direnv, fzf và vài alias. Không dùng oh-my-zsh.
 
-Trong cấu hình fish, tmux và git, những chỗ gắn với macOS (`open -a`, `pbcopy`, đường dẫn `/opt/homebrew/bin/gh`) đã có nhánh cho Linux hoặc lấy theo PATH. `install.sh` thì vẫn chỉ chạy trên macOS.
+Trong cấu hình fish, tmux và git, những chỗ gắn với macOS (`open -a`, `pbcopy`, đường dẫn `/opt/homebrew/bin/gh`) đã có nhánh cho Linux hoặc lấy theo PATH. `config/fish/conf.d/brew.fish` đưa Homebrew vào PATH khi shell chưa thấy `brew` (máy Linux mới); máy đã có `brew` trong PATH thì không đổi gì.
+
+## Linux
+
+Hỗ trợ Debian, Ubuntu và Pop!_OS (desktop). `./install.sh` chạy `apt` (gói hệ thống), `brew` (Linuxbrew, cùng danh sách công cụ như macOS), `link`, `hooks`, `fonts`, `mise`, `rust`, `nvim`. Khác macOS:
+
+- Gói chỉ có trên macOS khai báo bằng `if OS.mac?` cuối dòng trong Brewfile (Brewfile là Ruby): `mole`, `lima`, và ba cask trong `Brewfile.devops`. `scripts/drift.sh` hiểu điều này và không đòi các gói đó trên Linux.
+- Docker: brew chỉ cài CLI. Daemon cài tay (`sudo apt-get install docker.io`) và thêm vào nhóm `docker` nếu muốn dùng không cần `sudo`; nhóm này tương đương quyền root nên script không tự làm.
+- Ứng dụng đồ hoạ (`Brewfile.apps`), Ghostty, Tailscale, gcloud, Cloudflare WARP: cài theo hướng dẫn của từng hãng.
+- OdooLS (`odoo_ls_server`) chưa có bước cài trên cả hai hệ điều hành; nvim chỉ bật nó khi project có `odools.toml` và binary nằm ở `~/.local/share/nvim/odoo/`.
 
 ## Neovim
 

@@ -4,12 +4,13 @@
 #   scripts/drift.sh       in phần đã cài mà chưa khai báo, và phần khai báo mà chưa cài
 #   scripts/drift.sh -q    như trên nhưng im lặng khi không lệch; thoát mã 1 nếu có lệch
 #
-# Kiểm: Homebrew (formula, cask) so với Brewfile*; runtime mise so với config/mise/config.toml.
+# Kiểm: Homebrew (formula, cask; Linux không có cask) so với Brewfile*, gói apt so với Aptfile (Linux), runtime mise so với config/mise/config.toml.
 # Thêm gói mới vào đúng file Brewfile* rồi chạy lại, thay vì ghi đè Brewfile từ máy.
 
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+OS="$(uname -s)"
 quiet=0
 drift=0
 
@@ -41,9 +42,10 @@ report() {
   echo
 }
 
-# tên ngắn (bỏ tiền tố tap) của mọi mục kiểu $1 (brew|cask) trong Brewfile*
+# tên ngắn (bỏ tiền tố tap) của mọi mục kiểu $1 (brew|cask) trong Brewfile*; ngoài macOS bỏ dòng `if OS.mac?`
 declared() {
   find "$REPO" -maxdepth 1 -name 'Brewfile*' -exec cat {} + |
+    { if [ "$OS" = Darwin ]; then cat; else grep -v 'if OS\.mac?' || true; fi; } |
     sed -nE "s/^$1 \"([^\"]+)\".*/\1/p" | sed 's#.*/##' | sort -u
 }
 
@@ -56,15 +58,31 @@ check_brew() {
   comm -23 "$tmp/f_req" "$tmp/f_decl" >"$tmp/f_undeclared"
   comm -13 "$tmp/f_all" "$tmp/f_decl" >"$tmp/f_missing"
 
+  report "Formula đã cài mà chưa khai báo" "$tmp/f_undeclared" 'thêm vào Brewfile (lõi) hoặc Brewfile.devops'
+  report "Formula khai báo mà chưa cài" "$tmp/f_missing" 'brew bundle install --file=<Brewfile.*> hoặc bỏ khỏi khai báo'
+
+  # Linuxbrew không có cask
+  [ "$OS" = Darwin ] || return 0
   declared cask >"$tmp/c_decl"
   brew list --cask | sort -u >"$tmp/c_all"
   comm -23 "$tmp/c_all" "$tmp/c_decl" >"$tmp/c_undeclared"
   comm -13 "$tmp/c_all" "$tmp/c_decl" >"$tmp/c_missing"
 
-  report "Formula đã cài mà chưa khai báo" "$tmp/f_undeclared" 'thêm vào Brewfile (lõi) hoặc Brewfile.devops'
   report "Cask đã cài mà chưa khai báo" "$tmp/c_undeclared" 'thêm vào Brewfile.apps (hoặc Brewfile.devops)'
-  report "Formula khai báo mà chưa cài" "$tmp/f_missing" 'brew bundle install --file=<Brewfile.*> hoặc bỏ khỏi khai báo'
   report "Cask khai báo mà chưa cài" "$tmp/c_missing" 'brew bundle install --file=<Brewfile.*> hoặc bỏ khỏi khai báo'
+}
+
+check_apt() {
+  [ "$OS" = Linux ] && have dpkg-query || return 0
+
+  sed -e 's/#.*//' -e 's/[[:space:]]*$//' -e '/^$/d' "$REPO/Aptfile" | sort -u >"$tmp/a_decl"
+  local pkg
+  while IFS= read -r pkg; do
+    # shellcheck disable=SC2016 # ${Status} là cú pháp của dpkg-query, không phải biến shell
+    dpkg-query -W -f='${Status}' "$pkg" 2>/dev/null | grep -q 'install ok installed' || echo "$pkg"
+  done <"$tmp/a_decl" >"$tmp/a_missing"
+
+  report "Gói apt khai báo mà chưa cài" "$tmp/a_missing" './install.sh apt'
 }
 
 check_mise() {
@@ -83,6 +101,7 @@ check_mise() {
 }
 
 check_brew
+check_apt
 check_mise
 
 if [ "$drift" -eq 0 ]; then

@@ -1,0 +1,29 @@
+# Gói hệ thống cho Debian / Ubuntu / Pop!_OS (bước `apt` của install.sh). Mỗi dòng một gói, `#` là ghi chú.
+# Chỉ những gì apt phải lo: công cụ còn lại do Homebrew (Brewfile*) và mise.
+
+# Homebrew trên Linux cần: build-essential curl file git procps
+build-essential
+ca-certificates
+curl
+file
+git
+procps
+
+# Mason (LSP, formatter) giải nén và biên dịch parser treesitter
+unzip
+xz-utils
+
+# clipboard: tmux chọn xclip (X11) hoặc wl-copy (Wayland), xem config/tmux/tmux.conf
+wl-clipboard
+xclip
+
+# mise biên dịch Ruby (và Python khi không có bản dựng sẵn) cần các thư viện này
+libbz2-dev
+libffi-dev
+liblzma-dev
+libncurses-dev
+libreadline-dev
+libsqlite3-dev
+libssl-dev
+libyaml-dev
+zlib1g-dev
