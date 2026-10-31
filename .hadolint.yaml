@@ -1,0 +1,5 @@
+# Dockerfile của docker/pkg-scanner cố ý không ghim phiên bản: công cụ quét lỗ hổng phải luôn là bản mới nhất.
+ignored:
+  - DL3018 # apk add không ghim phiên bản
+  - DL3016 # npm install -g không ghim phiên bản
+  - DL4006 # pipe trong RUN chỉ để lấy số phiên bản mới nhất; rỗng thì lệnh tải ngay sau đó cũng lỗi nên build vẫn dừng

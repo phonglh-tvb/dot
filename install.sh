@@ -9,6 +9,7 @@
 # Các bước:
 #   apt    (chỉ Linux) gói hệ thống trong Aptfile: bộ build, công cụ Homebrew cần, clipboard
 #   brew   Homebrew + Brewfile (lõi), rồi Brewfile.<nhóm> theo DOT_PROFILES
+#   lima   VM Lima "dev" chạy Docker (lima/dev.yaml) + docker context; VM đã có thì giữ nguyên
 #   link   symlink config/ vào ~ (scripts/link.sh; đồ có sẵn được backup, không bị xoá)
 #   hooks  bật hook gitleaks (.githooks) cho repo dotfiles này: chặn commit / push chứa secret
 #   fonts  (chỉ Linux) Nerd Font vào ~/.local/share/fonts (scripts/fonts.sh); macOS cài font bằng cask
@@ -22,7 +23,7 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OS="$(uname -s)"
 case "$OS" in
   Darwin)
-    STEPS="brew link hooks mise rust nvim"
+    STEPS="brew lima link hooks mise rust nvim"
     DEFAULT_PROFILES="devops apps"
     ;;
   Linux)
@@ -96,6 +97,24 @@ step_brew() {
     fi
     brew bundle install --file="$DIR/Brewfile.$profile"
   done
+}
+
+step_lima() {
+  have limactl || die "chưa có limactl; chạy './install.sh brew' trước"
+  have docker || die "chưa có docker (CLI); chạy './install.sh brew' trước"
+
+  # VM đã có thì không đụng tới: tạo lại hay khởi động lại VM kéo theo mọi container
+  if limactl list --quiet | grep -qx dev; then
+    echo "VM dev đã có, giữ nguyên ($(limactl list dev --format '{{.Status}}')); đổi cấu hình thì sửa lima/dev.yaml rồi limactl edit dev"
+  else
+    limactl start --name=dev --tty=false "$DIR/lima/dev.yaml"
+  fi
+
+  # Chỉ tạo và chuyển sang context khi chưa có; máy đã có context dev thì giữ nguyên
+  if ! docker context inspect dev &>/dev/null; then
+    docker context create dev --docker "host=unix://$(limactl list dev --format '{{.Dir}}')/sock/docker.sock"
+    docker context use dev
+  fi
 }
 
 step_link() {
@@ -172,7 +191,7 @@ EOF
 }
 
 usage() {
-  sed -n '2,17p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+  sed -n '2,18p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 main() {

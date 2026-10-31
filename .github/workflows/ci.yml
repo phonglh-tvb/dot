@@ -25,7 +25,7 @@ jobs:
       - name: Cài công cụ
         run: |
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-          brew install shellcheck shfmt stylua actionlint gitleaks
+          brew install shellcheck shfmt stylua actionlint gitleaks hadolint
           echo "$(brew --prefix)/bin" >> "$GITHUB_PATH"
 
       - name: shellcheck
@@ -39,6 +39,9 @@ jobs:
 
       - name: actionlint
         run: actionlint
+
+      - name: hadolint
+        run: hadolint docker/pkg-scanner/Dockerfile
 
       - name: gitleaks (file và lịch sử)
         run: |

@@ -53,9 +53,12 @@ brew "typst"
 brew "uv"
 
 # container: trên macOS Lima chạy docker (không dùng Docker Desktop); trên Linux docker chạy thẳng, brew chỉ cài CLI
+brew "dive"
 brew "docker"
 brew "docker-buildx"
 brew "docker-compose"
+brew "hadolint"
+brew "lazydocker"
 brew "lima" if OS.mac?
 brew "podman-compose"
 
@@ -65,6 +68,7 @@ brew "ffmpeg"
 brew "grpcurl"
 brew "hurl"
 brew "mycli"
+brew "oha"
 brew "pgcli"
 brew "xo/xo/usql", trusted: true
 brew "websocat"
