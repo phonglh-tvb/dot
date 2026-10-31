@@ -29,4 +29,6 @@ zoxide init fish --cmd cd | source
 # Antigravity IDE (chỉ khi đã cài)
 test -d ~/.antigravity-ide/antigravity-ide/bin; and fish_add_path ~/.antigravity-ide/antigravity-ide/bin
 
-string match -q "$TERM_PROGRAM" "kiro" and . (kiro --locate-shell-integration-path fish)
+# Kiro shell integration (chỉ trong terminal của Kiro). Dòng cũ thiếu `;` trước `and`, nên fish coi cả dòng là một lệnh
+# `string match` và chạy `kiro --locate-shell-integration-path` ở mọi lần mở shell (máy không có kiro thì báo lỗi mỗi lần).
+test "$TERM_PROGRAM" = kiro; and type -q kiro; and . (kiro --locate-shell-integration-path fish)
