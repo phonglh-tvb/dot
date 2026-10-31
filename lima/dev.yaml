@@ -1,0 +1,78 @@
+# VM Lima "dev" chạy Docker thay Docker Desktop (macOS). Dựng bằng: ./install.sh lima
+# Bản chép từ máy chính (mẫu docker của Lima 2.x, 4 CPU, 6 GiB RAM, 100 GiB đĩa, vz + Rosetta); sửa tại đây rồi tạo lại VM.
+# Không chứa secret. Sửa file này KHÔNG đổi VM đang chạy: muốn áp dụng phải `limactl edit dev` hoặc tạo lại VM.
+minimumLimaVersion: 2.0.0
+
+images:
+- location: "https://cloud-images.ubuntu.com/minimal/releases/noble/release/ubuntu-24.04-minimal-cloudimg-arm64.img"
+  arch: "aarch64"
+- location: "https://cloud-images.ubuntu.com/releases/noble/release/ubuntu-24.04-server-cloudimg-arm64.img"
+  arch: "aarch64"
+
+containerd:
+  system: false
+  user: false
+
+provision:
+- mode: system
+  script: |
+    #!/bin/sh
+    sed -i 's/host.lima.internal.*/host.lima.internal host.docker.internal/' /etc/hosts
+- mode: system
+  script: |
+    #!/bin/bash
+    set -eux -o pipefail
+    command -v docker >/dev/null 2>&1 && exit 0
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get install -y ca-certificates curl
+    curl -fsSL https://get.docker.com | sh
+- mode: yq
+  path: /etc/systemd/system/docker.socket.d/override.conf
+  format: ini
+  expression: .Socket.SocketUser="{{.User}}"
+- mode: yq
+  path: "/etc/docker/daemon.json"
+  expression: |
+    .features.cdi = true |
+    .features.containerd-snapshotter = true
+
+probes:
+- script: |
+    #!/bin/bash
+    set -eux -o pipefail
+    if ! timeout 60s bash -c "until command -v docker >/dev/null 2>&1; do sleep 3; done"; then
+      echo >&2 "docker is not installed yet"
+      exit 1
+    fi
+    if ! timeout 60s bash -c "until pgrep dockerd; do sleep 3; done"; then
+      echo >&2 "dockerd is not running"
+      exit 1
+    fi
+  hint: See "/var/log/cloud-init-output.log" in the guest
+
+hostResolver:
+  hosts:
+    host.docker.internal: host.lima.internal
+
+portForwards:
+- guestSocket: "/var/run/docker.sock"
+  hostSocket: "{{.Dir}}/sock/docker.sock"
+
+mounts:
+- location: "~"
+
+message: |
+  Docker is ready. To use it from the host:
+  docker context create dev --docker "host=unix://{{.Dir}}/sock/docker.sock"
+  docker context use dev
+
+vmType: vz
+vmOpts:
+  vz:
+    rosetta:
+      enabled: true
+      binfmt: true
+cpus: 4
+memory: 6GiB
+disk: 100GiB
