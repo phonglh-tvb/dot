@@ -6,13 +6,11 @@ cask "1password"
 cask "1password-cli"
 cask "betterdisplay"
 cask "karabiner-elements"
-cask "openkey"
 cask "openlogi"
 cask "raycast"
 
 # terminal và editor
 cask "cursor"
-cask "ghostty"
 cask "intellij-idea"
 cask "iterm2"
 cask "kiro"
