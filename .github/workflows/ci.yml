@@ -88,6 +88,21 @@ jobs:
           # status không được còn đề nghị link / backup nào (nghĩa là mọi link đã đúng)
           ! scripts/link.sh status | grep -E '^\s+(link|backup)\s'
 
+      - name: link.sh giữ file lạ trong thư mục .link-each và gỡ link mồ côi
+        run: |
+          HOME="$(mktemp -d)"
+          export HOME
+          unset XDG_CONFIG_HOME
+          mkdir -p "$HOME/.config/gh"
+          echo login >"$HOME/.config/gh/hosts.yml"
+          ln -s "$PWD/config/da-xoa" "$HOME/.config/da-xoa"
+          scripts/link.sh apply | tee "$RUNNER_TEMP/third.txt"
+          grep -q 'stale' "$RUNNER_TEMP/third.txt"
+          [ ! -L "$HOME/.config/da-xoa" ]
+          [ "$(cat "$HOME/.config/gh/hosts.yml")" = login ]
+          [ -L "$HOME/.config/gh/config.yml" ]
+          [ ! -L "$HOME/.config/gh" ]
+
       - name: install.sh liệt kê bước
         run: ./install.sh --list
 
