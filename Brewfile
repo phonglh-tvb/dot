@@ -26,6 +26,7 @@ brew "gnupg"
 brew "jq"
 brew "lazygit"
 brew "mole" if OS.mac?
+brew "navi"
 brew "neovim"
 brew "ripgrep"
 brew "shellcheck"
