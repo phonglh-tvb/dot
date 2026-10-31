@@ -62,7 +62,7 @@ Mọi PR: đọc lại `git diff --stat`, `scripts/secrets.sh scan`, và cập n
 
 ## Nâng cấp
 
-Phạm vi: Homebrew (`brew outdated`), runtime mise (`mise outdated`), plugin Neovim (`vim.pack.update()` rồi commit `nvim-pack-lock.json`), công cụ Mason (`:MasonToolsUpdateSync`), parser treesitter, npm global.
+Phạm vi: Homebrew (`brew outdated`), runtime mise (`mise outdated`), plugin Neovim (`vim.pack.update()` rồi commit `nvim-pack-lock.json`), công cụ Mason (`:MasonToolsUpdateSync`), parser treesitter, OdooLS (đổi `VERSION` và sha256 trong `scripts/odoo-ls.sh` theo trường `digest` của trang release `odoo/odoo-ls`; đọc ghi chú và `config_schema.json` của release, rồi đối chiếu khoá trong `odools.toml` đang dùng), npm global.
 
 - Đọc release notes và breaking changes của bản mới ở nguồn chính thức, nhất là bản major. Không dựa vào trí nhớ về phiên bản.
 - Mỗi PR một nhóm (brew, plugin nvim, runtime mise...). PR ghi bảng *cũ → mới* và đã kiểm gì.
@@ -90,6 +90,7 @@ Phạm vi: Homebrew (`brew outdated`), runtime mise (`mise outdated`), plugin Ne
 | Thêm cấu hình cho một công cụ | `config/<tên>/`, rồi `scripts/link.sh`. Mục nào bắt đầu bằng `.` thì link vào `~/<tên>`, còn lại vào `~/.config/<tên>`. Thư mục đích còn chứa thứ không được vào repo (token, cơ sở dữ liệu) thì đặt file `.link-each` vào `config/<tên>/` để chỉ link từng file; đừng link nguyên thư mục như `~/.config/gh`. Trước khi chép một file cấu hình vào repo public, đọc hết nó tìm token, key, host riêng |
 | Plugin Neovim | `config/nvim/lua/plugins.lua` (`vim.pack.add`), cấu hình ở `lua/configs/`, rồi cập nhật `nvim-pack-lock.json` |
 | LSP, formatter, debugger | `lua/configs/tools.lua` (Mason), `lspconfig.lua`, `conform.lua`, `dap.lua` |
+| OdooLS (binary, typeshed, bản) | `scripts/odoo-ls.sh` (không qua Mason: Mason không có OdooLS); cách gắn vào nvim ở `lspconfig.lua` |
 | Phím tắt Neovim | `lua/mappings.lua` (giữ bộ phím NvChad, không đè phím cũ nếu không được nói rõ) |
 | Alias, hàm, biến fish | `config/fish/` (`conf.d/*.fish` tự nạp) |
 | Zsh (shell của công cụ và IDE) | `config/.zshenv`, `.zprofile`, `.zshrc`: giữ tối thiểu, không oh-my-zsh. Thử bằng `ZDOTDIR=<worktree>/config zsh -l -i` trong môi trường sạch (`env -i`), không đè lên `~/.zshrc` thật |

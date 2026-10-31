@@ -23,6 +23,7 @@ cd ~/workspace/work/dot
 | `mise` | runtime (go, java, node, python, ruby, dotnet) theo `config/mise/config.toml` |
 | `rust` | rustup + toolchain stable, chỉ khi chưa có `~/.cargo/bin/rustup` |
 | `nvim` | plugin Neovim (đúng commit trong `nvim-pack-lock.json`), công cụ Mason, parser treesitter. Lần đầu tải vài GB nên khá lâu |
+| `odoo` | OdooLS (language server của Odoo) và typeshed vào `~/.local/share/nvim/odoo/`, bản ghim kèm checksum ([scripts/odoo-ls.sh](scripts/odoo-ls.sh)); bản đang có được giữ lại bên cạnh |
 
 Còn vài việc phải làm tay vì cần mật khẩu / đăng nhập (script nhắc lại ở cuối): đặt fish làm shell mặc định (`chsh`), `gh auth login`, khoá SSH để ký commit, `~/.gitconfig-personal`.
 
@@ -46,6 +47,7 @@ install.sh         dựng máy mới theo từng bước
 scripts/drift.sh   so máy với khai báo: cài mà chưa khai báo, khai báo mà chưa cài (chỉ đọc)
 scripts/docker-clean.sh   liệt kê (và với --apply, dọn) Docker; không bao giờ tự xoá volume có tên
 scripts/fonts.sh   Nerd Font cho Linux
+scripts/odoo-ls.sh   OdooLS cho Neovim (Odoo), bản ghim kèm checksum
 Brewfile           phần lõi: công cụ dòng lệnh
 Brewfile.devops    cloud, Kubernetes, Terraform, giám sát
 Brewfile.apps      ứng dụng đồ hoạ và font (macOS)
@@ -85,12 +87,12 @@ Trong cấu hình fish, tmux và git, những chỗ gắn với macOS (`open -a`
 
 ## Linux
 
-Hỗ trợ Debian, Ubuntu và Pop!_OS (desktop). `./install.sh` chạy `apt` (gói hệ thống), `brew` (Linuxbrew, cùng danh sách công cụ như macOS), `link`, `hooks`, `fonts`, `mise`, `rust`, `nvim`. Khác macOS:
+Hỗ trợ Debian, Ubuntu và Pop!_OS (desktop). `./install.sh` chạy `apt` (gói hệ thống), `brew` (Linuxbrew, cùng danh sách công cụ như macOS), `link`, `hooks`, `fonts`, `mise`, `rust`, `nvim`, `odoo`. Khác macOS:
 
 - Gói chỉ có trên macOS khai báo bằng `if OS.mac?` cuối dòng trong Brewfile (Brewfile là Ruby): `mole`, `lima`, và ba cask trong `Brewfile.devops`. `scripts/drift.sh` hiểu điều này và không đòi các gói đó trên Linux.
 - Docker: brew chỉ cài CLI. Daemon cài tay (`sudo apt-get install docker.io`) và thêm vào nhóm `docker` nếu muốn dùng không cần `sudo`; nhóm này tương đương quyền root nên script không tự làm.
 - Ứng dụng đồ hoạ (`Brewfile.apps`), Ghostty, Tailscale, gcloud, Cloudflare WARP: cài theo hướng dẫn của từng hãng.
-- OdooLS (`odoo_ls_server`) chưa có bước cài trên cả hai hệ điều hành; nvim chỉ bật nó khi project có `odools.toml` và binary nằm ở `~/.local/share/nvim/odoo/`.
+- OdooLS (`odoo_ls_server`) cài bằng bước `odoo` (có bản cho macOS và Linux, x86_64 và arm64); nvim chỉ bật nó khi project có `odools.toml`.
 
 ## Neovim
 
@@ -110,6 +112,7 @@ nvim-pack-lock.json      commit của từng plugin (đưa vào git)
 - Cập nhật plugin: `:lua vim.pack.update()`, xem thay đổi, `:write` để chấp nhận, rồi commit lockfile. Hoàn lại: `git checkout HEAD -- nvim-pack-lock.json` rồi `:restart`.
 - Công cụ (LSP, formatter, debug adapter) khai báo một chỗ trong `lua/configs/tools.lua`; `mason-tool-installer` tự cài những gói còn thiếu. Cài lại bằng tay: `:MasonToolsInstall`.
 - Cài plugin bị ngắt giữa chừng: khởi động sau sẽ tự xoá thư mục hỏng và cài lại.
+- Odoo: `odoo_ls` chỉ gắn vào `python` và `xml` khi project có `odools.toml`. Binary và typeshed do `./install.sh odoo` cài, bản và sha256 ghim trong `scripts/odoo-ls.sh`. Nâng bản: sửa `VERSION` và sha256 theo trang release, đọc ghi chú phát hành và `config_schema.json` của release đó trước (khoá của `odools.toml` có thể đổi). Bản cũ được giữ thành `odoo_ls_server.<bản cũ>` và `typeshed.<bản cũ>`; quay lại bằng `mv` ngược.
 
 ## Docker và Lima
 
