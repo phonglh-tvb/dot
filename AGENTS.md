@@ -85,7 +85,7 @@ Phạm vi: Homebrew (`brew outdated`), runtime mise (`mise outdated`), plugin Ne
 | Thêm gói Homebrew hay ứng dụng | `Brewfile` (công cụ dòng lệnh), `Brewfile.devops` (cloud, k8s, giám sát), `Brewfile.apps` (ứng dụng đồ hoạ, font; chỉ macOS) |
 | Thêm gói hệ thống trên Linux | `Aptfile` |
 | Thêm runtime hoặc đổi phiên bản | `config/mise/config.toml` |
-| Thêm cấu hình cho một công cụ | `config/<tên>/`, rồi `scripts/link.sh`. Mục nào bắt đầu bằng `.` thì link vào `~/<tên>`, còn lại vào `~/.config/<tên>` |
+| Thêm cấu hình cho một công cụ | `config/<tên>/`, rồi `scripts/link.sh`. Mục nào bắt đầu bằng `.` thì link vào `~/<tên>`, còn lại vào `~/.config/<tên>`. Thư mục đích còn chứa thứ không được vào repo (token, cơ sở dữ liệu) thì đặt file `.link-each` vào `config/<tên>/` để chỉ link từng file; đừng link nguyên thư mục như `~/.config/gh`. Trước khi chép một file cấu hình vào repo public, đọc hết nó tìm token, key, host riêng |
 | Plugin Neovim | `config/nvim/lua/plugins.lua` (`vim.pack.add`), cấu hình ở `lua/configs/`, rồi cập nhật `nvim-pack-lock.json` |
 | LSP, formatter, debugger | `lua/configs/tools.lua` (Mason), `lspconfig.lua`, `conform.lua`, `dap.lua` |
 | Phím tắt Neovim | `lua/mappings.lua` (giữ bộ phím NvChad, không đè phím cũ nếu không được nói rõ) |

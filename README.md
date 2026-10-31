@@ -30,7 +30,8 @@ Còn vài việc phải làm tay vì cần mật khẩu / đăng nhập (script 
 ```
 config/            mọi cấu hình, link vào máy theo quy ước bên dưới
   nvim/            Neovim 0.12 thuần (vim.pack) + giao diện NvChad: LSP, format, debug, viết tài liệu
-  fish/ tmux/ ghostty/ wezterm/ alacritty/ ...
+  fish/ tmux/ ghostty/ karabiner/ ...
+  gh/ zed/         chỉ link từng file (config.yml, settings.json), xem Quy ước link
   .gitconfig       -> ~/.gitconfig
   .gitignore_global
   .zshenv .zprofile .zshrc   -> ~/   zsh tối thiểu (xem dưới)
@@ -51,7 +52,7 @@ ansible/           role `dot` (gọi scripts/link.sh) và `pkg-security` (trivy,
 docker/            database dev (Postgres, Mongo, MySQL) và pkg-scanner
 ```
 
-Quy ước link: mục trong `config/` bắt đầu bằng `.` thì link vào `~/<tên>`, còn lại link vào `~/.config/<tên>`. Vì là symlink nên sửa `~/.config/nvim/...` chính là sửa file trong repo; chỉ việc `git commit`.
+Quy ước link: mục trong `config/` bắt đầu bằng `.` thì link vào `~/<tên>`, còn lại link vào `~/.config/<tên>`. Thư mục có file `.link-each` thì chỉ link từng file bên trong, phần còn lại của thư mục đích giữ nguyên: `gh/config.yml` được theo dõi còn `gh/hosts.yml` (đăng nhập) thì không bao giờ vào repo; `zed/settings.json` được link còn `prompts/` (cơ sở dữ liệu của Zed) ở yên. Karabiner thì link nguyên thư mục vì tài liệu của nó yêu cầu thế (link riêng `karabiner.json` làm nó không nhận ra thay đổi); `automatic_backups/` nó tự ghi vào đó đã có trong `.gitignore`. Link của repo mà mục trong `config/` đã bị xoá (vd. `wezterm`, `alacritty`) thì lần `link.sh` sau tự gỡ. Vì là symlink nên sửa `~/.config/nvim/...` chính là sửa file trong repo; chỉ việc `git commit`.
 
 ## Việc thường làm
 
@@ -116,4 +117,4 @@ Repo public, nên không chứa giá trị secret, chỉ có công cụ và tham
 
 ## Không nằm trong repo
 
-Cấu hình riêng của từng máy, không commit: `~/.gitconfig-personal` (danh tính cho `~/workspace/personal/`), `~/.gitalias`, `config/fish/fish_variables`, `.claude/settings.local.json`.
+Cấu hình riêng của từng máy, không commit: `~/.gitconfig-personal` (danh tính cho `~/workspace/personal/`), `config/fish/fish_variables`, `.claude/settings.local.json`, và mọi thứ chứa đăng nhập như `~/.config/gh/hosts.yml`.
