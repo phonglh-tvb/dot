@@ -16,6 +16,7 @@
 #   mise   runtime (go, java, node, python...) theo config/mise/config.toml
 #   rust   rustup + toolchain stable, chỉ khi chưa có ~/.cargo/bin/rustup
 #   nvim   plugin Neovim (vim.pack), công cụ Mason (LSP, formatter, debugger), parser treesitter
+#   odoo   OdooLS (language server của Odoo) cho Neovim: binary + typeshed (scripts/odoo-ls.sh); bản cũ được giữ lại
 
 set -euo pipefail
 
@@ -23,11 +24,11 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OS="$(uname -s)"
 case "$OS" in
   Darwin)
-    STEPS="brew lima link hooks mise rust nvim"
+    STEPS="brew lima link hooks mise rust nvim odoo"
     DEFAULT_PROFILES="devops apps"
     ;;
   Linux)
-    STEPS="apt brew link hooks fonts mise rust nvim"
+    STEPS="apt brew link hooks fonts mise rust nvim odoo"
     DEFAULT_PROFILES="devops" # Brewfile.apps toàn cask, chỉ có trên macOS
     ;;
   *)
@@ -171,6 +172,10 @@ step_nvim() {
   nvim --headless "+lua require('configs.treesitter').install():wait(600000)" +qa
 }
 
+step_odoo() {
+  "$DIR/scripts/odoo-ls.sh"
+}
+
 next_steps() {
   cat <<'EOF'
 
@@ -191,7 +196,7 @@ EOF
 }
 
 usage() {
-  sed -n '2,18p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+  sed -n '2,19p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 main() {

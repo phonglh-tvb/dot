@@ -109,6 +109,20 @@ jobs:
       - name: install.sh liệt kê bước
         run: ./install.sh --list
 
+      # Tải thật (khoảng 16 MB) để kiểm cả checksum ghim lẫn bản dựng sẵn của từng hệ (Linux x86_64, macOS arm64)
+      - name: odoo-ls.sh cài đúng bản và chạy lần hai không đổi gì
+        run: |
+          HOME="$(mktemp -d)"
+          export HOME
+          unset XDG_DATA_HOME NVIM_APPNAME
+          scripts/odoo-ls.sh | tee "$RUNNER_TEMP/odoo1.txt"
+          grep -q 'changed=1' "$RUNNER_TEMP/odoo1.txt"
+          want="$(sed -n 's/^VERSION="\(.*\)"/\1/p' scripts/odoo-ls.sh)"
+          [ "$("$HOME/.local/share/nvim/odoo/odoo_ls_server" --version | awk '{ print $NF }')" = "$want" ]
+          [ -d "$HOME/.local/share/nvim/odoo/typeshed/stdlib" ]
+          scripts/odoo-ls.sh | tee "$RUNNER_TEMP/odoo2.txt"
+          grep -q 'changed=0' "$RUNNER_TEMP/odoo2.txt"
+
       - name: tmux chọn đúng lệnh clipboard
         run: |
           export TERM=xterm-256color
