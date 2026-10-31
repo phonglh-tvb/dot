@@ -10,8 +10,12 @@
 #   tên bắt đầu bằng "."  (vd .gitconfig)  ->  ~/<tên>
 #   còn lại                                 ->  ${XDG_CONFIG_HOME:-~/.config}/<tên>
 #
+# Thư mục có file .link-each thì chỉ link từng file bên trong (giữ nguyên phần còn lại của thư mục đích,
+# vd. gh/config.yml được link còn gh/hosts.yml chứa đăng nhập thì không bao giờ vào repo).
+#
 # Đích đã có mà không phải symlink đúng chỗ thì được chuyển vào
 # ~/.dotfiles-backup/<thời gian>/ trước khi link; không bao giờ bị xoá.
+# Link cũ của repo này mà mục trong config/ đã bị xoá thì được gỡ (chỉ gỡ symlink, không đụng file thật).
 # Chạy lại bao nhiêu lần cũng được: link đã đúng thì bỏ qua.
 
 set -euo pipefail
@@ -26,7 +30,7 @@ dry_run=0
 changed=0
 
 usage() {
-  sed -n '2,16p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+  sed -n '2,21p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 while [ $# -gt 0 ]; do
@@ -103,8 +107,8 @@ link_one() {
 
   if [ -e "$dest" ] || [ -L "$dest" ]; then
     say backup "$YELLOW" "$dest ${DIM}-> ${BACKUP_DIR/#$HOME/~}/$RESET"
-    run mkdir -p "$BACKUP_DIR"
-    run mv "$dest" "$BACKUP_DIR/$(basename "$dest")"
+    run mkdir -p "$(dirname "$BACKUP_DIR/$name")"
+    run mv "$dest" "$BACKUP_DIR/$name"
     changed=$((changed + 1))
   fi
 
@@ -128,6 +132,38 @@ unlink_one() {
   fi
 }
 
+# Các mục cần link, mỗi dòng một đường dẫn tương đối so với config/: thư mục thường là một mục,
+# thư mục có .link-each thì mỗi file bên trong là một mục. Glob cả file ẩn (.gitconfig...).
+entries() {
+  local path name
+  for path in "$SRC"/* "$SRC"/.[!.]*; do
+    [ -e "$path" ] || [ -L "$path" ] || continue
+    name="$(basename "$path")"
+    [ "$name" = ".DS_Store" ] && continue
+    if [ -f "$path/.link-each" ]; then
+      (cd "$SRC" && find "$name" -type f ! -name .link-each ! -name .DS_Store | sort)
+    else
+      echo "$name"
+    fi
+  done
+}
+
+# Link của repo này mà đích trong repo không còn (vd. đã bỏ một cấu hình): gỡ. Chỉ xét symlink trỏ vào config/.
+prune_stale() {
+  local link target
+  for link in "$CONFIG_HOME"/* "$HOME"/.[!.]*; do
+    [ -L "$link" ] && [ ! -e "$link" ] || continue
+    target="$(readlink "$link")"
+    case "$target" in
+      "$SRC"/*) ;;
+      *) continue ;;
+    esac
+    say stale "$YELLOW" "$link ${DIM}-> ${target/#$HOME/~} (không còn trong repo)${RESET}"
+    run rm "$link"
+    changed=$((changed + 1))
+  done
+}
+
 [ -d "$SRC" ] || {
   echo "không thấy $SRC" >&2
   exit 1
@@ -135,17 +171,14 @@ unlink_one() {
 
 [ "$dry_run" = 1 ] && echo "(dry-run: không có gì bị thay đổi)"
 
-# Glob cả file ẩn (.gitconfig...); mẫu không khớp thì [ -e ] bên dưới bỏ qua.
-for path in "$SRC"/* "$SRC"/.[!.]*; do
-  [ -e "$path" ] || [ -L "$path" ] || continue
-  name="$(basename "$path")"
-  [ "$name" = ".DS_Store" ] && continue
-
+while IFS= read -r name; do
   if [ "$mode" = unlink ]; then
     unlink_one "$name"
   else
     link_one "$name"
   fi
-done
+done < <(entries)
+
+[ "$mode" = unlink ] || prune_stale
 
 echo "changed=$changed"

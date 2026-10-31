@@ -1,4 +1,5 @@
-# Ứng dụng đồ hoạ và font (chỉ macOS). Bỏ qua trên server: DOT_PROFILES="devops" ./install.sh brew
+# Ứng dụng đồ hoạ và font, toàn cask nên chỉ macOS (install.sh bỏ qua nhóm này trên Linux; font Linux: scripts/fonts.sh).
+# Bỏ qua trên server: DOT_PROFILES="devops" ./install.sh brew
 
 # bảo mật, tiện ích hệ thống
 cask "1password"

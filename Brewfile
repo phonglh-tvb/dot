@@ -1,6 +1,9 @@
 # Phần lõi: công cụ dòng lệnh dùng hằng ngày. Cài kèm Brewfile.devops và Brewfile.apps (xem install.sh).
 # Trong mỗi nhóm giữ thứ tự theo tên ngắn. Kiểm máy có lệch khai báo không: scripts/drift.sh
+# Brewfile là Ruby: gói chỉ có trên macOS thì thêm `if OS.mac?` ở cuối dòng (Linuxbrew sẽ bỏ qua).
 
+# Homebrew 7 từ chối tải formula của tap bên thứ ba chưa được tin (máy mới chưa chạy `brew trust`).
+# Chỉ tin đúng từng formula bên dưới (`trusted: true`), không tin cả tap.
 tap "xo/xo"
 
 # shell, editor, git
@@ -11,6 +14,7 @@ brew "bat"
 brew "btop"
 brew "direnv"
 brew "eza"
+brew "fastfetch"
 brew "fd"
 brew "fish"
 brew "fzf"
@@ -21,7 +25,7 @@ brew "gitleaks"
 brew "gnupg"
 brew "jq"
 brew "lazygit"
-brew "mole"
+brew "mole" if OS.mac?
 brew "neovim"
 brew "ripgrep"
 brew "shellcheck"
@@ -48,14 +52,14 @@ brew "protobuf"
 brew "typst"
 brew "uv"
 
-# container: Lima chạy docker, không dùng Docker Desktop
+# container: trên macOS Lima chạy docker (không dùng Docker Desktop); trên Linux docker chạy thẳng, brew chỉ cài CLI
 brew "dive"
 brew "docker"
 brew "docker-buildx"
 brew "docker-compose"
 brew "hadolint"
 brew "lazydocker"
-brew "lima"
+brew "lima" if OS.mac?
 brew "podman-compose"
 
 # cơ sở dữ liệu và gọi API
@@ -66,7 +70,7 @@ brew "hurl"
 brew "mycli"
 brew "oha"
 brew "pgcli"
-brew "xo/xo/usql"
+brew "xo/xo/usql", trusted: true
 brew "websocat"
 brew "xh"
 
