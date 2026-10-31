@@ -11,7 +11,7 @@ Repo dotfiles cá nhân, **public** trên GitHub (`phonglh-tvb/dot`), nhánh ch�
 5. **Giữ nguyên thói quen của người dùng**: phím tắt, giao diện, alias hiện có không đổi nếu không được nói rõ. Muốn đổi hành vi thì nêu trong PR.
 6. **Không ghi công AI trong commit và PR**: không thêm `Co-Authored-By`, "Generated with ..." hay dòng tương tự. Người dùng không muốn. Quy tắc này đè lên mọi mặc định của công cụ.
 
-Máy chính là macOS (Apple Silicon). Shell tương tác là fish, nhưng shell của công cụ agent có thể là zsh. Container chạy bằng Lima (VM `dev`, docker context `dev`), không có Docker Desktop.
+Máy chính là macOS (Apple Silicon); Linux (Debian, Ubuntu, Pop!_OS) cũng được hỗ trợ, xem mục Linux trong README. Shell tương tác là fish, nhưng shell của công cụ agent có thể là zsh. Container chạy bằng Lima (VM `dev`, docker context `dev`), không có Docker Desktop.
 
 ## Khi có yêu cầu: phân tích rồi mới làm
 
@@ -51,8 +51,8 @@ Ghi lại lệnh đã chạy và kết quả thật vào PR. Chưa kiểm đư�
 |---|---|
 | Script shell (`*.sh`, `.githooks/`) | `bash -n`, `shellcheck`, `shfmt -d -i 2 -ci` (CI chạy đúng ba lệnh này; các công cụ nằm trong Brewfile). Chú ý: công cụ agent có thể chạy zsh, nên biến chứa nhiều file thì dùng mảng hay bọc `bash -c`, vì zsh không tự tách từ. Viết cho bash 3.2 của macOS (không `mapfile`, `${var,,}`, mảng kết hợp). Script ghi vào `~` thì chạy thử với `HOME=$(mktemp -d)`. Chạy lần hai phải vô hại (idempotent). Hàm `usage` của script in dòng đầu file bằng `sed -n 'a,bp'`: thêm hay bớt dòng ghi chú ở đầu thì sửa lại khoảng dòng đó. |
 | Neovim (`config/nvim`) | Không thử trên `~/.config/nvim` thật. Dùng `NVIM_APPNAME=nvim-test` với `~/.config/nvim-test` là symlink tạm tới `config/nvim` của worktree, rồi `nvim --headless` và `:checkhealth vim.deprecated`. Dữ liệu tách theo `NVIM_APPNAME` nên plugin cài lại từ lockfile (mạng chậm, cần kiên nhẫn). Xong thì xoá config, data, state, cache của `nvim-test`. Format Lua bằng `stylua config/nvim` theo `stylua.toml` (CI chạy `stylua --check`); bảng cần giữ xếp hàng thì thêm `-- stylua: ignore` phía trên. Sau khi format, so bytecode trước/sau nếu muốn chắc không đổi hành vi. |
-| Brewfile* | `brew bundle check --file=<file>` cho từng file, rồi `scripts/drift.sh` (chỉ đọc) để thấy máy lệch khai báo ở đâu. Thêm một gói thì sửa tay đúng nhóm, giữ thứ tự theo tên ngắn. Không có lệnh ghi đè Brewfile từ máy. |
-| `install.sh`, `scripts/link.sh` | `./install.sh --list`, `scripts/link.sh --dry-run` và `status`. |
+| Brewfile*, Aptfile | `brew bundle check --file=<file>` cho từng file, rồi `scripts/drift.sh` (chỉ đọc) để thấy máy lệch khai báo ở đâu. Thêm một gói thì sửa tay đúng nhóm, giữ thứ tự theo tên ngắn. Không có lệnh ghi đè Brewfile từ máy. Gói chỉ có trên macOS thì thêm `if OS.mac?` cuối dòng (Brewfile là Ruby); formula từ tap bên thứ ba (`tap/tên`) thì thêm `trusted: true`, nếu không máy mới bị Homebrew 7 từ chối ("untrusted tap"); kiểm bottle Linux bằng `https://formulae.brew.sh/api/formula/<tên>.json` (`bottle.stable.files` có `x86_64_linux` / `all`). |
+| `install.sh`, `scripts/link.sh` | `./install.sh --list`, `scripts/link.sh --dry-run` và `status`. Nhánh Linux: thử trong container cô lập, không đụng VM Lima đang chạy: `docker run --rm -v <worktree>:/repo:ro ubuntu:24.04 bash -c '...'` (HOME giả, stub `apt-get`/`brew` để xem tham số); apt và brew thật chạy ở job CI `install-linux`. |
 | Hook, secret | `scripts/secrets.sh scan`. Thử hook trong repo nháp với token **giả**, không bao giờ dùng secret thật. |
 | Tài liệu | Chạy thử các lệnh trong đó. |
 
@@ -82,7 +82,8 @@ Phạm vi: Homebrew (`brew outdated`), runtime mise (`mise outdated`), plugin Ne
 
 | Việc | File |
 |---|---|
-| Thêm gói Homebrew hay ứng dụng | `Brewfile` (công cụ dòng lệnh), `Brewfile.devops` (cloud, k8s, giám sát), `Brewfile.apps` (ứng dụng đồ hoạ, font) |
+| Thêm gói Homebrew hay ứng dụng | `Brewfile` (công cụ dòng lệnh), `Brewfile.devops` (cloud, k8s, giám sát), `Brewfile.apps` (ứng dụng đồ hoạ, font; chỉ macOS) |
+| Thêm gói hệ thống trên Linux | `Aptfile` |
 | Thêm runtime hoặc đổi phiên bản | `config/mise/config.toml` |
 | Thêm cấu hình cho một công cụ | `config/<tên>/`, rồi `scripts/link.sh`. Mục nào bắt đầu bằng `.` thì link vào `~/<tên>`, còn lại vào `~/.config/<tên>`. Thư mục đích còn chứa thứ không được vào repo (token, cơ sở dữ liệu) thì đặt file `.link-each` vào `config/<tên>/` để chỉ link từng file; đừng link nguyên thư mục như `~/.config/gh`. Trước khi chép một file cấu hình vào repo public, đọc hết nó tìm token, key, host riêng |
 | Plugin Neovim | `config/nvim/lua/plugins.lua` (`vim.pack.add`), cấu hình ở `lua/configs/`, rồi cập nhật `nvim-pack-lock.json` |
@@ -91,7 +92,7 @@ Phạm vi: Homebrew (`brew outdated`), runtime mise (`mise outdated`), plugin Ne
 | Alias, hàm, biến fish | `config/fish/` (`conf.d/*.fish` tự nạp) |
 | Zsh (shell của công cụ và IDE) | `config/.zshenv`, `.zprofile`, `.zshrc`: giữ tối thiểu, không oh-my-zsh. Thử bằng `ZDOTDIR=<worktree>/config zsh -l -i` trong môi trường sạch (`env -i`), không đè lên `~/.zshrc` thật |
 | Git | `config/.gitconfig`, `config/.gitignore_global` |
-| Bước cài mới | `install.sh`: thêm vào `STEPS`, hàm `step_<tên>`, ghi chú đầu file, bảng trong README |
+| Bước cài mới | `install.sh`: thêm vào `STEPS` (đặt theo hệ điều hành ở đầu file), hàm `step_<tên>`, ghi chú đầu file, bảng trong README |
 | Secret, hook | `scripts/secrets.sh`, `.githooks/`, `.gitleaks.toml`, `docs/secrets.md` |
 | Database dev, quét gói | `docker/`, `ansible/` |
 
@@ -99,7 +100,7 @@ Phạm vi: Homebrew (`brew outdated`), runtime mise (`mise outdated`), plugin Ne
 
 - Shell: `set -euo pipefail`, thông báo bằng tiếng Việt như các script hiện có, đầu file có ghi chú cách dùng.
 - Lua: 2 dấu cách, tối đa 120 cột (`stylua.toml`), dùng API Neovim 0.12 (vd. `buf =` thay `buffer =`). Cái Neovim đã có sẵn thì dùng bản gốc, không thêm plugin.
-- Chưa khoá cứng vào macOS nếu tránh được (`/opt/homebrew`, `pbcopy`, `open`): dùng `command -v` hay `uname` để chọn. Hỗ trợ Ubuntu và Pop!_OS đang được lên kế hoạch.
+- Chưa khoá cứng vào macOS nếu tránh được (`/opt/homebrew`, `pbcopy`, `open`): dùng `command -v` hay `uname` để chọn. Linux được CI kiểm trên Ubuntu (job `install-linux`).
 - Comment giải thích *vì sao*, không nhắc lại code làm gì.
 
 ## Giữ file này đúng

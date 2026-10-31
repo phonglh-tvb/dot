@@ -125,3 +125,55 @@ jobs:
           for f in Brewfile Brewfile.*; do
             brew bundle list --all --file="$f" > /dev/null
           done
+
+  # Cài thật trên Ubuntu: apt, Linuxbrew (lõi + devops), link, hooks, font; rồi đối chiếu với khai báo.
+  # mise và nvim (tải vài GB) chưa nằm trong CI.
+  install-linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      HOMEBREW_BUNDLE_NO_UPGRADE: "1"
+      HOMEBREW_NO_ANALYTICS: "1"
+      HOMEBREW_NO_ENV_HINTS: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: apt
+        run: ./install.sh apt
+
+      # Runner có sẵn Linuxbrew nhưng chưa nằm trong PATH: đúng tình huống brew_shellenv của install.sh phải xử lý
+      - name: brew (lõi và devops)
+        run: ./install.sh brew
+
+      - name: PATH cho các bước sau
+        run: echo "/home/linuxbrew/.linuxbrew/bin" >> "$GITHUB_PATH"
+
+      - name: Công cụ chạy được
+        run: |
+          for t in nvim mise fish tmux starship atuin zoxide fzf rg fd bat eza jq gh lazygit gitleaks docker terraform; do
+            command -v "$t" || { echo "thiếu $t"; exit 1; }
+          done
+          nvim --version | head -1
+          nvim --headless -c 'lua assert(vim.fn.has("nvim-0.12") == 1, "cần Neovim 0.12+")' -c q
+
+      - name: link, hooks, fonts trong HOME giả
+        run: |
+          HOME="$(mktemp -d)"
+          export HOME
+          unset XDG_CONFIG_HOME
+          ./install.sh link hooks fonts
+          ./install.sh link fonts | tee "$RUNNER_TEMP/second.txt"
+          grep -q 'changed=0' "$RUNNER_TEMP/second.txt"
+          [ -n "$(find "$HOME/.local/share/fonts/NerdFonts" -name 'JetBrainsMonoNerdFont-Regular.ttf')" ]
+          # shell sạch, không có brew trong PATH: conf.d/brew.fish phải tự tìm ra brew, và không được báo lỗi nào
+          out="$(env -i HOME="$HOME" PATH=/usr/bin:/bin /home/linuxbrew/.linuxbrew/bin/fish -c 'type -q brew; and type -q atuin; and echo fish-thay-brew' 2>&1)"
+          echo "$out"
+          [ "$out" = fish-thay-brew ]
+
+      - name: drift.sh trên Linux
+        run: |
+          scripts/drift.sh | tee "$RUNNER_TEMP/drift.txt" || true
+          # gói khai báo thì phải cài được; phần "đã cài mà chưa khai báo" của runner không phải việc của repo
+          ! grep -E 'khai báo mà chưa cài' "$RUNNER_TEMP/drift.txt"
