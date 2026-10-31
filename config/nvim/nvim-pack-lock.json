@@ -125,7 +125,7 @@
       "version": "1.0.0 - 2.0.0"
     },
     "ui": {
-      "rev": "07a2554e58fa982e2dcf8dd346291cefef00ca33",
+      "rev": "8cbf0dc1883b20a1df114149c187d250f0af0853",
       "src": "https://github.com/nvchad/ui",
       "version": "'v3.0'"
     },
