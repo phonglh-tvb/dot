@@ -14,7 +14,7 @@ brew "kind"
 brew "kubernetes-cli"
 brew "kustomize"
 brew "prometheus"
-brew "hashicorp/tap/terraform"
+brew "hashicorp/tap/terraform", trusted: true
 brew "terragrunt"
 
 # cask chỉ có trên macOS; trên Linux cài các công cụ này theo hướng dẫn của từng hãng

@@ -2,6 +2,8 @@
 # Trong mỗi nhóm giữ thứ tự theo tên ngắn. Kiểm máy có lệch khai báo không: scripts/drift.sh
 # Brewfile là Ruby: gói chỉ có trên macOS thì thêm `if OS.mac?` ở cuối dòng (Linuxbrew sẽ bỏ qua).
 
+# Homebrew 7 từ chối tải formula của tap bên thứ ba chưa được tin (máy mới chưa chạy `brew trust`).
+# Chỉ tin đúng từng formula bên dưới (`trusted: true`), không tin cả tap.
 tap "xo/xo"
 
 # shell, editor, git
@@ -63,7 +65,7 @@ brew "grpcurl"
 brew "hurl"
 brew "mycli"
 brew "pgcli"
-brew "xo/xo/usql"
+brew "xo/xo/usql", trusted: true
 brew "websocat"
 brew "xh"
 
