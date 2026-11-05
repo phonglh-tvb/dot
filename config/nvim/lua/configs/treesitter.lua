@@ -7,7 +7,7 @@ M.parsers = {
   -- web / frontend
   "html", "css", "scss", "javascript", "typescript", "tsx", "json", "yaml", "toml", "prisma",
   -- backend
-  "python", "go", "gomod", "gosum", "gowork", "gotmpl", "rust", "java", "c", "php",
+  "python", "go", "gomod", "gosum", "gowork", "gotmpl", "rust", "java", "c_sharp", "razor", "c", "php",
   -- Odoo: view / QWeb là xml
   "xml",
   -- tài liệu

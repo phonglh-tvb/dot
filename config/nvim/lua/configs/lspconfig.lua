@@ -1,5 +1,6 @@
 -- LSP dùng API gốc của Neovim (vim.lsp.config / vim.lsp.enable); nvim-lspconfig chỉ cung cấp dữ liệu lsp/*.lua.
--- rust_analyzer do rustaceanvim quản lý, jdtls do nvim-jdtls quản lý (không bật qua vim.lsp.enable).
+-- rust_analyzer do rustaceanvim quản lý, jdtls do nvim-jdtls quản lý, roslyn do roslyn.nvim tự bật
+-- (không bật qua vim.lsp.enable).
 local servers = {
   "lua_ls",
   -- web / frontend
@@ -92,6 +93,23 @@ vim.lsp.config("gopls", {
         parameterNames = true,
         rangeVariableTypes = true,
       },
+    },
+  },
+})
+
+-- Roslyn (C#, Razor) cần roslyn-language-server trong PATH: cài bằng mise, xem config/mise/config.toml.
+-- Gợi ý inlay hiện khi bật bằng <leader>uh; completion kèm cả kiểu chưa using (như completeUnimported của gopls).
+vim.lsp.config("roslyn", {
+  settings = {
+    ["csharp|inlay_hints"] = {
+      csharp_enable_inlay_hints_for_implicit_object_creation = true,
+      csharp_enable_inlay_hints_for_implicit_variable_types = true,
+      csharp_enable_inlay_hints_for_lambda_parameter_types = true,
+      csharp_enable_inlay_hints_for_types = true,
+      dotnet_enable_inlay_hints_for_literal_parameters = true,
+    },
+    ["csharp|completion"] = {
+      dotnet_show_completion_items_from_unimported_namespaces = true,
     },
   },
 })

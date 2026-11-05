@@ -72,10 +72,11 @@ vim.pack.add({
   gh "mason-org/mason.nvim",
   gh "WhoIsSethDaniel/mason-tool-installer.nvim",
 
-  -- Rust, Java, Go, Python, JS/TS
+  -- Rust, Java, C#, Go, Python, JS/TS
   { src = gh "mrcjkb/rustaceanvim", version = vim.version.range "^9" },
   gh "saecki/crates.nvim",
   gh "mfussenegger/nvim-jdtls",
+  gh "seblyng/roslyn.nvim", -- nvim-lspconfig có roslyn_ls nhưng không hỗ trợ Razor (.cshtml, .razor)
 
   -- Debug (Rust do rustaceanvim, Java do jdtls tự cấu hình adapter)
   gh "mfussenegger/nvim-dap",
@@ -108,6 +109,7 @@ require("conform").setup(require "configs.conform")
 require "configs.mason"
 require "configs.writing"
 require "configs.lspconfig"
+require "configs.scaffold"
 
 vim.g.rustaceanvim = function()
   return require "configs.rust"

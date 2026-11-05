@@ -1,4 +1,4 @@
--- Ngôn ngữ không khai báo ở đây (rust, java, toml, typst, tex...) rơi về LSP format
+-- Ngôn ngữ không khai báo ở đây (rust, java, cs, toml, typst, tex...) rơi về LSP format
 -- qua <leader>fm (lsp_fallback = true trong mappings của NvChad)
 local prettier = { "prettier" }
 
