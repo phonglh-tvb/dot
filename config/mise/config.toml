@@ -1,5 +1,10 @@
 [tools]
 dotnet = "latest"
+# C# trong Neovim: roslyn.nvim cần roslyn-language-server >= 5.12.0-1.26453.19 (Mason còn bản cũ hơn),
+# netcoredbg cần bản có osx-arm64 (Mason chỉ có bản x86_64); dotnet-aspnet-codegenerator là engine của :Scaffold
+"dotnet:dotnet-aspnet-codegenerator" = "latest"
+"dotnet:roslyn-language-server" = "latest"
+"github:Samsung/netcoredbg" = "latest"
 go = "latest"
 java = ["temurin-21", "temurin-25"]
 node = "latest"

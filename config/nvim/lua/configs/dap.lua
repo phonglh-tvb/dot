@@ -1,6 +1,31 @@
 -- Rust: rustaceanvim tự cấu hình codelldb; Java: nvim-jdtls (configs/jdtls.lua)
 local M = {}
 
+local function csproj_root()
+  return vim.fs.root(0, function(name)
+    return name:match "%.csproj$" ~= nil
+  end)
+end
+
+-- Build rồi trả về dll của project (chặn giao diện vài giây, nvim-dap cần đường dẫn ngay); bản TFM mới nhất xếp cuối
+local function dotnet_dll()
+  local root = csproj_root()
+  local project = root and vim.fn.glob(root .. "/*.csproj", false, true)[1]
+  if not project then
+    vim.notify("Không thấy .csproj quanh file này", vim.log.levels.ERROR)
+    return require("dap").ABORT
+  end
+
+  local build = vim.system({ "dotnet", "build", project }, { text = true }):wait()
+  if build.code ~= 0 then
+    vim.notify(build.stdout, vim.log.levels.ERROR, { title = "dotnet build" })
+    return require("dap").ABORT
+  end
+
+  local dlls = vim.fn.glob(root .. "/bin/Debug/*/" .. vim.fn.fnamemodify(project, ":t:r") .. ".dll", false, true)
+  return dlls[#dlls] or require("dap").ABORT
+end
+
 function M.setup()
   local dap = require "dap"
   local dapui = require "dapui"
@@ -52,6 +77,25 @@ function M.setup()
   for _, ft in ipairs { "javascript", "typescript", "javascriptreact", "typescriptreact" } do
     dap.configurations[ft] = js_configs
   end
+
+  -- C#: netcoredbg cài bằng mise (bản có osx-arm64; Mason chỉ có bản x86_64, không debug được app arm64)
+  dap.adapters.coreclr = { type = "executable", command = "netcoredbg", args = { "--interpreter=vscode" } }
+  dap.configurations.cs = {
+    {
+      type = "coreclr",
+      request = "launch",
+      name = "C#: build and launch",
+      program = dotnet_dll,
+      cwd = csproj_root,
+      env = { ASPNETCORE_ENVIRONMENT = "Development" },
+    },
+    {
+      type = "coreclr",
+      request = "attach",
+      name = "C#: attach to process",
+      processId = require("dap.utils").pick_process,
+    },
+  }
 end
 
 return M

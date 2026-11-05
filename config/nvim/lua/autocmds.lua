@@ -16,6 +16,8 @@ end, {})
 local indent = {
   python = { 4, true },
   java = { 4, true },
+  cs = { 4, true },
+  razor = { 4, true }, -- .cshtml và .razor
   rust = { 4, true },
   xml = { 4, true }, -- view / QWeb của Odoo
   go = { 4, false }, -- gofmt dùng tab

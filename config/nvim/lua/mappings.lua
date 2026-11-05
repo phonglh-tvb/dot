@@ -122,6 +122,8 @@ map("n", "<leader>fs", "<cmd>Telescope lsp_document_symbols<cr>", { desc = "tele
 map("n", "<leader>fS", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", { desc = "telescope workspace symbols" })
 map("n", "<leader>fd", "<cmd>Telescope diagnostics<cr>", { desc = "telescope diagnostics" })
 
+map("n", "<leader>cs", "<cmd>Scaffold<cr>", { desc = "dotnet scaffold (model -> controller / view)" })
+
 -- Danh sách diagnostics / references / symbols bằng quickfix gốc (thay trouble.nvim)
 map("n", "<leader>qd", function()
   vim.diagnostic.setqflist()
