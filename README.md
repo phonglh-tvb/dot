@@ -98,6 +98,8 @@ Hỗ trợ Debian, Ubuntu và Pop!_OS (desktop). `./install.sh` chạy `apt` (g�
 
 Cấu hình thuần Neovim 0.12, không dùng NvChad (bản distribution) hay lazy.nvim. Những gì Neovim đã có sẵn thì dùng bản gốc: `vim.pack` (quản lý plugin), `vim.lsp.config` / `vim.lsp.enable`, completion và snippet LSP (`vim.lsp.completion`, `vim.snippet`), `gc` để comment, treesitter highlight. Giao diện (statusline, tabufline, nvdash, đổi theme) vẫn là plugin `nvchad/ui` + `nvchad/base46`, chạy độc lập.
 
+Cách dùng hằng ngày (phím tắt, debug, quy trình C#) ở [config/nvim/README.md](config/nvim/README.md).
+
 ```
 init.lua                 vào cấu hình
 lua/plugins.lua          danh sách plugin (vim.pack) + hook build
@@ -106,6 +108,7 @@ lua/mappings.lua         phím tắt (giữ nguyên bộ phím NvChad)
 lua/autocmds.lua         indent theo ngôn ngữ, viết tài liệu, Java
 lua/configs/             lspconfig, conform, dap, jdtls, rust, scaffold (:Scaffold), tools (danh sách Mason), ui, writing
 nvim-pack-lock.json      commit của từng plugin (đưa vào git)
+README.md                cách dùng: phím tắt và quy trình làm việc
 ```
 
 - Plugin ghim bằng `nvim-pack-lock.json`: máy mới mở nvim (hoặc `./install.sh nvim`) là cài đúng commit.

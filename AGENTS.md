@@ -92,7 +92,7 @@ Phạm vi: Homebrew (`brew outdated`), runtime mise (`mise outdated`), plugin Ne
 | LSP, formatter, debugger | `lua/configs/tools.lua` (Mason), `lspconfig.lua`, `conform.lua`, `dap.lua` |
 | OdooLS (binary, typeshed, bản) | `scripts/odoo-ls.sh` (không qua Mason: Mason không có OdooLS); cách gắn vào nvim ở `lspconfig.lua` |
 | C# / .NET trong Neovim | LSP `roslyn.nvim` (`plugins.lua`, settings ở `lspconfig.lua`), debug ở `dap.lua`, `:Scaffold` ở `lua/configs/scaffold.lua`. Công cụ (`roslyn-language-server`, `netcoredbg`, `dotnet-aspnet-codegenerator`) nằm trong `config/mise/config.toml`, không phải Mason, vì bản Mason cũ hoặc sai kiến trúc |
-| Phím tắt Neovim | `lua/mappings.lua` (giữ bộ phím NvChad, không đè phím cũ nếu không được nói rõ) |
+| Phím tắt Neovim | `lua/mappings.lua` (giữ bộ phím NvChad, không đè phím cũ nếu không được nói rõ), rồi cập nhật bảng phím trong `config/nvim/README.md` |
 | Alias, hàm, biến fish | `config/fish/` (`conf.d/*.fish` tự nạp) |
 | Zsh (shell của công cụ và IDE) | `config/.zshenv`, `.zprofile`, `.zshrc`: giữ tối thiểu, không oh-my-zsh. Thử bằng `ZDOTDIR=<worktree>/config zsh -l -i` trong môi trường sạch (`env -i`), không đè lên `~/.zshrc` thật |
 | Git | `config/.gitconfig`, `config/.gitignore_global` |
