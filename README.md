@@ -62,7 +62,7 @@ Brewfile.devops    cloud, Kubernetes, Terraform, giám sát
 Brewfile.apps      ứng dụng đồ hoạ và font (macOS)
 Aptfile            gói hệ thống cho Linux (bước apt)
 lima/dev.yaml      cấu hình VM Lima chạy Docker (macOS)
-docker/            database dev (Postgres, Valkey, Mongo, MySQL, Kafka) và pkg-scanner
+docker/            database dev (Postgres, Valkey, Mongo, MySQL, SQL Server, Kafka) và pkg-scanner
 ansible/           role `dot` (gọi scripts/link.sh) và `pkg-security` (trivy, osv-scanner, socket)
 .githooks/         hook gitleaks chặn commit / push chứa secret
 .github/           mẫu mô tả PR và CI (workflows/ci.yml)

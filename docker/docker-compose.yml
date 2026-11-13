@@ -68,6 +68,31 @@ services:
       timeout: 5s
       retries: 5
 
+  # Image chỉ có bản amd64, trên Apple Silicon chạy qua Rosetta của VM Lima: nặng nên để sau profile.
+  # Mật khẩu không có mặc định (SQL Server đòi mật khẩu mạnh), không dùng ${...:?} vì nó làm hỏng cả file
+  # khi chưa đặt, kể cả lúc không bật profile. Xem docs/specs/0001-lima-mssql.md.
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-CU28-ubuntu-22.04
+    platform: linux/amd64
+    container_name: mssql-dev
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:-}
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssqldata:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -b -Q 'SELECT 1' -o /dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    profiles:
+      - mssql
+
   kafka:
     image: apache/kafka:4.2.0
     container_name: kafka
@@ -107,4 +132,6 @@ volumes:
   valkeydata:
   mongodata:
   mysqldata:
+  mssqldata:
+    name: mssql-data # giữ đúng tên trong spec 0001
   kafkadata:

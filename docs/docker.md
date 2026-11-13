@@ -8,12 +8,19 @@ VM bật Rosetta nên chạy được image chỉ có bản `linux/amd64`, ví d
 
 ## Database dev
 
-[docker/docker-compose.yml](../docker/docker-compose.yml) có Postgres (cổng 5433), Valkey (6380), MongoDB (27017) và MySQL (3306), dữ liệu nằm trong volume có tên. Kafka và `pkg-scanner` chỉ chạy khi bật profile `kafka` / `tools`.
+[docker/docker-compose.yml](../docker/docker-compose.yml) có Postgres (cổng 5433), Valkey (6380), MongoDB (27017) và MySQL (3306), dữ liệu nằm trong volume có tên. Kafka, SQL Server và `pkg-scanner` chỉ chạy khi bật profile `kafka` / `mssql` / `tools`.
 
 ```sh
 cp docker/env.example docker/.env      # tuỳ chọn: không có thì user / mật khẩu mặc định là dev
 docker-compose -f docker/docker-compose.yml up -d
 docker-compose -f docker/docker-compose.yml --profile kafka up -d kafka
+```
+
+SQL Server 2022 (container `mssql-dev`, cổng 1433, volume `mssql-data`) không có mật khẩu mặc định: đặt `MSSQL_SA_PASSWORD` trước, lấy từ 1Password. Mật khẩu yếu hoặc để trống thì container dừng ngay sau khi chạy (`docker logs mssql-dev` cho biết lý do). Vì sao chạy được trên Apple Silicon: [spec 0001](specs/0001-lima-mssql.md).
+
+```sh
+export MSSQL_SA_PASSWORD="$(op read 'op://Dev/mssql-dev/password')"   # đường dẫn op:// là ví dụ
+docker-compose -f docker/docker-compose.yml --profile mssql up -d mssql
 ```
 
 `docker/.env` đã nằm trong `.gitignore`.
