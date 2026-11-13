@@ -16,7 +16,7 @@ cd ~/workspace/work/dot
 |---|---|
 | `apt` | (chỉ Linux) gói hệ thống trong [Aptfile](Aptfile): bộ build, thứ Homebrew cần, clipboard. Cần `sudo` |
 | `brew` | cài Homebrew (Linuxbrew trên Linux) nếu chưa có, rồi `Brewfile` (lõi) và các nhóm `Brewfile.devops`, `Brewfile.apps`. Chọn nhóm bằng `DOT_PROFILES`, ví dụ `DOT_PROFILES="devops" ./install.sh brew`; để rỗng thì chỉ cài lõi. Mặc định macOS cài cả `devops` và `apps`, Linux chỉ `devops` (`apps` toàn cask, chỉ có trên macOS) |
-| `lima` | (chỉ macOS) VM Lima `dev` chạy Docker (thay Docker Desktop) theo [lima/dev.yaml](lima/dev.yaml), rồi docker context `dev`. VM hoặc context đã có thì giữ nguyên, không khởi động lại gì |
+| `lima` | (chỉ macOS) VM Lima `dev` chạy Docker (thay Docker Desktop) theo [lima/dev.yaml](lima/dev.yaml), rồi docker context `dev`. VM hoặc context đã có thì giữ nguyên, không khởi động lại gì ([docs/docker.md](docs/docker.md)) |
 | `link` | symlink `config/` vào máy ([scripts/link.sh](scripts/link.sh)) |
 | `hooks` | bật hook gitleaks cho repo này ([docs/secrets.md](docs/secrets.md)) |
 | `fonts` | (chỉ Linux) JetBrainsMono và MartianMono Nerd Font vào `~/.local/share/fonts`, bản ghim kèm checksum ([scripts/fonts.sh](scripts/fonts.sh)); macOS dùng cask |
@@ -27,6 +27,19 @@ cd ~/workspace/work/dot
 
 Còn vài việc phải làm tay vì cần mật khẩu / đăng nhập (script nhắc lại ở cuối): đặt fish làm shell mặc định (`chsh`), `gh auth login`, khoá SSH để ký commit, `~/.gitconfig-personal`.
 
+## Tài liệu
+
+| File | Nội dung |
+|---|---|
+| [docs/neovim.md](docs/neovim.md) | Neovim được dựng thế nào: plugin, công cụ, C#, Odoo. Cách dùng hằng ngày (phím tắt) ở [config/nvim/README.md](config/nvim/README.md) |
+| [docs/docker.md](docs/docker.md) | Docker trong VM Lima, database dev, dọn Docker |
+| [docs/shell.md](docs/shell.md) | fish, zsh tối thiểu, SSH |
+| [docs/linux.md](docs/linux.md) | cài trên Debian, Ubuntu, Pop!_OS khác macOS ở đâu |
+| [docs/secrets.md](docs/secrets.md) | giữ secret ngoài repo: 1Password, sops + age, gitleaks |
+| [docs/specs/](docs/specs/README.md) | spec: thiết kế viết trước khi làm việc lớn, và vì sao chọn hướng đó |
+| [CHANGELOG.md](CHANGELOG.md) | repo đã đổi gì, theo ngày |
+| [AGENTS.md](AGENTS.md) | cách làm việc trong repo: nhánh, kiểm chứng, PR (cho cả người và AI agent) |
+
 ## Bố cục
 
 ```
@@ -36,14 +49,10 @@ config/            mọi cấu hình, link vào máy theo quy ước bên dướ
   gh/ zed/         chỉ link từng file (config.yml, settings.json), xem Quy ước link
   .gitconfig       -> ~/.gitconfig
   .gitignore_global
-  .zshenv .zprofile .zshrc   -> ~/   zsh tối thiểu (xem dưới)
+  .zshenv .zprofile .zshrc   -> ~/   zsh tối thiểu (docs/shell.md)
+install.sh         dựng máy mới theo từng bước
 scripts/link.sh    symlink an toàn (xem dưới)
 scripts/secrets.sh kiểm tra / quản lý secret (1Password, sops + age)
-.githooks/         hook gitleaks chặn commit / push chứa secret
-docs/secrets.md    cách giữ secret ngoài repo
-AGENTS.md          hướng dẫn cho AI agent: phân tích yêu cầu, nhánh, kiểm chứng, PR (CLAUDE.md trỏ tới đây)
-.github/           mẫu mô tả PR và CI (workflows/ci.yml)
-install.sh         dựng máy mới theo từng bước
 scripts/drift.sh   so máy với khai báo: cài mà chưa khai báo, khai báo mà chưa cài (chỉ đọc)
 scripts/docker-clean.sh   liệt kê (và với --apply, dọn) Docker; không bao giờ tự xoá volume có tên
 scripts/fonts.sh   Nerd Font cho Linux
@@ -52,9 +61,14 @@ Brewfile           phần lõi: công cụ dòng lệnh
 Brewfile.devops    cloud, Kubernetes, Terraform, giám sát
 Brewfile.apps      ứng dụng đồ hoạ và font (macOS)
 Aptfile            gói hệ thống cho Linux (bước apt)
-ansible/           role `dot` (gọi scripts/link.sh) và `pkg-security` (trivy, osv-scanner, socket)
-docker/            database dev (Postgres, Mongo, MySQL) và pkg-scanner
 lima/dev.yaml      cấu hình VM Lima chạy Docker (macOS)
+docker/            database dev (Postgres, Valkey, Mongo, MySQL, Kafka) và pkg-scanner
+ansible/           role `dot` (gọi scripts/link.sh) và `pkg-security` (trivy, osv-scanner, socket)
+.githooks/         hook gitleaks chặn commit / push chứa secret
+.github/           mẫu mô tả PR và CI (workflows/ci.yml)
+docs/              tài liệu theo mảng (bảng trên); docs/specs/ chứa spec
+CHANGELOG.md       thay đổi theo ngày, mới nhất ở trên
+AGENTS.md          cách làm việc: phân tích yêu cầu, nhánh, kiểm chứng, PR (CLAUDE.md trỏ tới đây)
 ```
 
 Quy ước link: mục trong `config/` bắt đầu bằng `.` thì link vào `~/<tên>`, còn lại link vào `~/.config/<tên>`. Thư mục có file `.link-each` thì chỉ link từng file bên trong, phần còn lại của thư mục đích giữ nguyên: `gh/config.yml` được theo dõi còn `gh/hosts.yml` (đăng nhập) thì không bao giờ vào repo; `zed/settings.json` được link còn `prompts/` (cơ sở dữ liệu của Zed) ở yên. Karabiner thì link nguyên thư mục vì tài liệu của nó yêu cầu thế (link riêng `karabiner.json` làm nó không nhận ra thay đổi); `automatic_backups/` nó tự ghi vào đó đã có trong `.gitignore`. Link của repo mà mục trong `config/` đã bị xoá (vd. `wezterm`, `alacritty`) thì lần `link.sh` sau tự gỡ. Vì là symlink nên sửa `~/.config/nvim/...` chính là sửa file trong repo; chỉ việc `git commit`.
@@ -75,65 +89,13 @@ Thêm gói: sửa tay đúng file `Brewfile*` (giữ thứ tự theo tên ngắn
 
 `link.sh` không bao giờ xoá đồ của bạn: file hay thư mục đang chiếm chỗ được chuyển vào `~/.dotfiles-backup/<thời gian>/` trước khi tạo link. Đích đã đúng thì bỏ qua nên chạy lại vô hại.
 
-## CI
-
-Mỗi PR và mỗi lần đẩy lên `master` chạy [.github/workflows/ci.yml](.github/workflows/ci.yml): `shellcheck`, `shfmt`, `stylua --check`, `actionlint`, gitleaks (file và lịch sử); `hadolint` cho Dockerfile; rồi trên cả Ubuntu và macOS dựng cấu hình trong HOME giả (`link.sh` chạy hai lần phải không đổi gì), kiểm cú pháp zsh / fish, kiểm tmux chọn đúng lệnh clipboard; thêm job `install-linux` cài thật apt + Linuxbrew + font trên Ubuntu rồi đối chiếu bằng `drift.sh`. Chạy cùng các lệnh đó trên máy trước khi đẩy; công cụ có sẵn trong Brewfile.
-
-## Shell
-
-Shell tương tác chính là fish (`config/fish`). Zsh vẫn có cấu hình tối thiểu vì công cụ và IDE hay chạy zsh: `.zprofile` nạp Homebrew và `mise` (shims, nên `node`, `go`... đúng bản ở mọi nơi), `.zshrc` chỉ có prompt starship, atuin, zoxide, direnv, fzf và vài alias. Không dùng oh-my-zsh.
-
-Trong cấu hình fish, tmux và git, những chỗ gắn với macOS (`open -a`, `pbcopy`, đường dẫn `/opt/homebrew/bin/gh`) đã có nhánh cho Linux hoặc lấy theo PATH. `config/fish/conf.d/brew.fish` đưa Homebrew vào PATH khi shell chưa thấy `brew` (máy Linux mới); máy đã có `brew` trong PATH thì không đổi gì.
-
-## Linux
-
-Hỗ trợ Debian, Ubuntu và Pop!_OS (desktop). `./install.sh` chạy `apt` (gói hệ thống), `brew` (Linuxbrew, cùng danh sách công cụ như macOS), `link`, `hooks`, `fonts`, `mise`, `rust`, `nvim`, `odoo`. Khác macOS:
-
-- Gói chỉ có trên macOS khai báo bằng `if OS.mac?` cuối dòng trong Brewfile (Brewfile là Ruby): `mole`, `lima`, và ba cask trong `Brewfile.devops`. `scripts/drift.sh` hiểu điều này và không đòi các gói đó trên Linux.
-- Docker: brew chỉ cài CLI. Daemon cài tay (`sudo apt-get install docker.io`) và thêm vào nhóm `docker` nếu muốn dùng không cần `sudo`; nhóm này tương đương quyền root nên script không tự làm.
-- Ứng dụng đồ hoạ (`Brewfile.apps`), Ghostty, Tailscale, gcloud, Cloudflare WARP: cài theo hướng dẫn của từng hãng.
-- OdooLS (`odoo_ls_server`) cài bằng bước `odoo` (có bản cho macOS và Linux, x86_64 và arm64); nvim chỉ bật nó khi project có `odools.toml`.
-
-## Neovim
-
-Cấu hình thuần Neovim 0.12, không dùng NvChad (bản distribution) hay lazy.nvim. Những gì Neovim đã có sẵn thì dùng bản gốc: `vim.pack` (quản lý plugin), `vim.lsp.config` / `vim.lsp.enable`, completion và snippet LSP (`vim.lsp.completion`, `vim.snippet`), `gc` để comment, treesitter highlight. Giao diện (statusline, tabufline, nvdash, đổi theme) vẫn là plugin `nvchad/ui` + `nvchad/base46`, chạy độc lập.
-
-Cách dùng hằng ngày (phím tắt, debug, quy trình C#) ở [config/nvim/README.md](config/nvim/README.md).
-
-```
-init.lua                 vào cấu hình
-lua/plugins.lua          danh sách plugin (vim.pack) + hook build
-lua/options.lua          tuỳ chọn (gồm mặc định NvChad đã chép lại)
-lua/mappings.lua         phím tắt (giữ nguyên bộ phím NvChad)
-lua/autocmds.lua         indent theo ngôn ngữ, viết tài liệu, Java
-lua/configs/             lspconfig, conform, dap, jdtls, rust, scaffold (:Scaffold), tools (danh sách Mason), ui, writing
-nvim-pack-lock.json      commit của từng plugin (đưa vào git)
-README.md                cách dùng: phím tắt và quy trình làm việc
-```
-
-- Plugin ghim bằng `nvim-pack-lock.json`: máy mới mở nvim (hoặc `./install.sh nvim`) là cài đúng commit.
-- Cập nhật plugin: `:lua vim.pack.update()`, xem thay đổi, `:write` để chấp nhận, rồi commit lockfile. Hoàn lại: `git checkout HEAD -- nvim-pack-lock.json` rồi `:restart`.
-- Công cụ (LSP, formatter, debug adapter) khai báo một chỗ trong `lua/configs/tools.lua`; `mason-tool-installer` tự cài những gói còn thiếu. Cài lại bằng tay: `:MasonToolsInstall`.
-- Cài plugin bị ngắt giữa chừng: khởi động sau sẽ tự xoá thư mục hỏng và cài lại.
-- C# / .NET: LSP là `roslyn.nvim` (có Razor, tức `.cshtml` và `.razor`; `roslyn_ls` của nvim-lspconfig thì không). Ba công cụ cài bằng `mise install` chứ không qua Mason, vì Mason đang giữ `roslyn-language-server` cũ hơn mức roslyn.nvim yêu cầu và `netcoredbg` chỉ có bản x86_64 (macOS arm64 phải chạy qua Rosetta). Debug: `netcoredbg` qua nvim-dap, cấu hình "C#: build and launch" tự `dotnet build` rồi chạy dll của project.
-- `:Scaffold` (`<leader>cs`) làm việc như "Add > New Scaffolded Item" của Visual Studio: đứng trong file model, chọn controller + view (MVC), một view riêng, Razor Pages, Blazor hoặc Minimal API. Model lấy từ class đang đứng, DbContext tự tìm trong project (không thấy thì hỏi tên), file sinh ra mở ngay và nằm trong quickfix (`<leader>ql`). `:Scaffold!` ghi đè file đã có. Engine là `dotnet-aspnet-codegenerator`, nên project cần các package `Microsoft.VisualStudio.Web.CodeGeneration.Design` và `Microsoft.EntityFrameworkCore.SqlServer` / `.Tools` (Blazor thêm `Microsoft.AspNetCore.Components.QuickGrid`, Minimal API thêm `Microsoft.AspNetCore.OpenApi` nếu bật OpenAPI); thiếu gói nào tool tự báo.
-- Odoo: `odoo_ls` chỉ gắn vào `python` và `xml` khi project có `odools.toml`. Binary và typeshed do `./install.sh odoo` cài, bản và sha256 ghim trong `scripts/odoo-ls.sh`. Nâng bản: sửa `VERSION` và sha256 theo trang release, đọc ghi chú phát hành và `config_schema.json` của release đó trước (khoá của `odools.toml` có thể đổi). Bản cũ được giữ thành `odoo_ls_server.<bản cũ>` và `typeshed.<bản cũ>`; quay lại bằng `mv` ngược.
-
-## Docker và Lima
-
-Trên macOS Docker chạy trong VM Lima `dev` (không dùng Docker Desktop); cấu hình VM nằm ở [lima/dev.yaml](lima/dev.yaml) và `./install.sh lima` dựng VM cùng docker context `dev` trên máy mới. Sửa file đó không đổi VM đang chạy (muốn áp dụng thì `limactl edit dev` hoặc tạo lại VM, việc này khởi động lại mọi container nên làm có chủ đích).
-
-`scripts/docker-clean.sh` cho biết Docker đang giữ gì: container đã dừng, image không tên, volume ẩn danh, build cache, và riêng danh sách volume có tên mà không container nào dùng. Mặc định chỉ liệt kê. `--apply` xoá phần an toàn (kèm xác nhận), còn volume có tên chứa dữ liệu nên luôn để bạn tự `docker volume rm`. Công cụ đi kèm trong Brewfile: `lazydocker` (giao diện terminal), `dive` (xem từng layer của image), `hadolint` (kiểm Dockerfile, CI chạy với [.hadolint.yaml](.hadolint.yaml)), `oha` (thử tải HTTP).
-
-## SSH
-
-Repo chỉ giữ phần mặc định dùng chung ([config/ssh/defaults.conf](config/ssh/defaults.conf): `AddKeysToAgent`, `UseKeychain` có `IgnoreUnknown` nên chạy được cả trên Linux, `ServerAliveInterval`); host, IP, user và khoá của từng máy ở `~/.ssh` và không bao giờ commit. `link.sh` không đụng `~/.ssh`. Muốn dùng thì tự thêm hai dòng vào **cuối** `~/.ssh/config` (xem chú thích trong file; `Match all` cần thiết để Include không bị gắn vào khối `Host` phía trên, và đặt ở cuối để host cụ thể thắng mặc định).
-
-Khoá có passphrase thì lưu vào Keychain một lần: `/usr/bin/ssh-add --apple-use-keychain ~/.ssh/<khoá>` (dùng bản của macOS, bản Homebrew không có cờ này). Agent trống sau mỗi lần khởi động máy và `git commit` ký bằng khoá đó sẽ hỏi lại passphrase, nên [config/fish/conf.d/ssh-agent.fish](config/fish/conf.d/ssh-agent.fish) nạp các khoá đã lưu khi mở shell fish đầu tiên sau khi agent khởi động (macOS, ~0,5 giây, một lần).
-
 ## Secret
 
 Repo public, nên không chứa giá trị secret, chỉ có công cụ và tham chiếu: 1Password (`op`) là nguồn chính, sops + age cho file mã hoá, gitleaks chặn lỡ tay. Xem [docs/secrets.md](docs/secrets.md); `scripts/secrets.sh check` cho biết máy đang ở đâu.
+
+## CI
+
+Mỗi PR và mỗi lần đẩy lên `master` chạy [.github/workflows/ci.yml](.github/workflows/ci.yml): `shellcheck`, `shfmt`, `stylua --check`, `actionlint`, gitleaks (file và lịch sử); `hadolint` cho Dockerfile; rồi trên cả Ubuntu và macOS dựng cấu hình trong HOME giả (`link.sh` chạy hai lần phải không đổi gì), kiểm cú pháp zsh / fish, kiểm tmux chọn đúng lệnh clipboard; thêm job `install-linux` cài thật apt + Linuxbrew + font trên Ubuntu rồi đối chiếu bằng `drift.sh`. Chạy cùng các lệnh đó trên máy trước khi đẩy; công cụ có sẵn trong Brewfile.
 
 ## Ansible (tuỳ chọn)
 
@@ -141,4 +103,4 @@ Repo public, nên không chứa giá trị secret, chỉ có công cụ và tham
 
 ## Không nằm trong repo
 
-Cấu hình riêng của từng máy, không commit: `~/.gitconfig-personal` (danh tính cho `~/workspace/personal/`), `config/fish/fish_variables`, `.claude/settings.local.json`, và mọi thứ chứa đăng nhập như `~/.config/gh/hosts.yml`.
+Cấu hình riêng của từng máy, không commit: `~/.gitconfig-personal` (danh tính cho `~/workspace/personal/`), `config/fish/fish_variables`, `.claude/settings.local.json`, `docker/.env`, và mọi thứ chứa đăng nhập như `~/.config/gh/hosts.yml`.

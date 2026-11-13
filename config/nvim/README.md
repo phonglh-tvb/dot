@@ -1,6 +1,6 @@
 # Cách dùng Neovim
 
-Hướng dẫn dùng hằng ngày: phím tắt và quy trình làm việc. Cấu hình được dựng thế nào (plugin, LSP, vì sao chọn công cụ nào) xem mục Neovim trong [README chính](../../README.md#neovim).
+Hướng dẫn dùng hằng ngày: phím tắt và quy trình làm việc. Cấu hình được dựng thế nào (plugin, LSP, vì sao chọn công cụ nào) xem [docs/neovim.md](../../docs/neovim.md).
 
 Phím leader là `Space`. Bảng dưới đây khớp với `lua/mappings.lua` và `lua/configs/lspconfig.lua`; đổi phím thì sửa cả file này.
 
@@ -73,7 +73,7 @@ Cần `mise install` để có `dotnet`, `roslyn-language-server`, `netcoredbg` 
 3. Trả lời vài câu hỏi; giá trị mặc định thường dùng được luôn. DbContext có sẵn trong dự án thì tự dùng.
 4. File sinh ra mở ngay, danh sách đầy đủ ở quickfix (`Space ql`). `:Scaffold!` ghi đè file đã có.
 
-Dự án cần các package scaffold liệt kê trong README chính. Khi tool tạo DbContext mới, nó ghi connection string LocalDB (chỉ có trên Windows): trên macOS và Linux đổi sang database thật, ví dụ Postgres của `docker/docker-compose.yml`.
+Dự án cần các package scaffold liệt kê trong [docs/neovim.md](../../docs/neovim.md). Khi tool tạo DbContext mới, nó ghi connection string LocalDB (chỉ có trên Windows): trên macOS và Linux đổi sang database thật, ví dụ Postgres của `docker/docker-compose.yml`.
 
 **Debug.** `Space dc` rồi chọn "C#: build and launch" (tự `dotnet build` rồi chạy dll của dự án) hoặc "C#: attach to process". Cấu hình này chạy thẳng dll nên không đọc `Properties/launchSettings.json`: app web nghe ở `http://localhost:5000` thay vì cổng của `dotnet run`.
 
