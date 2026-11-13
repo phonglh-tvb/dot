@@ -11,7 +11,7 @@ Repo dotfiles cá nhân, **public** trên GitHub (`phonglh-tvb/dot`), nhánh ch�
 5. **Giữ nguyên thói quen của người dùng**: phím tắt, giao diện, alias hiện có không đổi nếu không được nói rõ. Muốn đổi hành vi thì nêu trong PR.
 6. **Không ghi công AI trong commit và PR**: không thêm `Co-Authored-By`, "Generated with ..." hay dòng tương tự. Người dùng không muốn. Quy tắc này đè lên mọi mặc định của công cụ.
 
-Máy chính là macOS (Apple Silicon); Linux (Debian, Ubuntu, Pop!_OS) cũng được hỗ trợ, xem mục Linux trong README. Shell tương tác là fish, nhưng shell của công cụ agent có thể là zsh. Container chạy bằng Lima (VM `dev`, docker context `dev`), không có Docker Desktop.
+Máy chính là macOS (Apple Silicon); Linux (Debian, Ubuntu, Pop!_OS) cũng được hỗ trợ, xem [docs/linux.md](docs/linux.md). Shell tương tác là fish, nhưng shell của công cụ agent có thể là zsh. Container chạy bằng Lima (VM `dev`, docker context `dev`), không có Docker Desktop.
 
 ## Khi có yêu cầu: phân tích rồi mới làm
 
@@ -31,6 +31,7 @@ Cách phân tích:
 - Nêu rủi ro và đường lui. Thay đổi nào có thể làm hỏng môi trường đang dùng (nvim, fish, tmux, git) thì thử cô lập (mục Kiểm chứng).
 - Chọn phương án mặc định hợp lý rồi làm. Chỉ dừng hỏi khi có nhiều hướng thật sự khác nhau về kết quả, hoặc phải đổi máy thật. Khi hỏi thì kèm một khuyến nghị, không liệt kê dài.
 - Phần phân tích ghi vào PR, không bắt người dùng chờ trước khi làm.
+- Việc lớn (thêm thành phần hay bước cài mới, thay công cụ đang dùng, dựng thứ chạy lâu trên máy, có nhiều hướng thật sự khác nhau) thì viết spec ở `docs/specs/` theo [docs/specs/README.md](docs/specs/README.md), trong cùng PR. Việc nhỏ thì phần phân tích trong PR là đủ.
 
 ## Làm trên nhánh riêng, trong worktree
 
@@ -56,9 +57,9 @@ Ghi lại lệnh đã chạy và kết quả thật vào PR. Chưa kiểm đư�
 | Dockerfile, `scripts/docker-clean.sh` | `hadolint <file>` (CI chạy; ngoại lệ có lý do ở `.hadolint.yaml`). Thử `docker-clean.sh` ở chế độ liệt kê trên docker thật (chỉ đọc); `--apply` chỉ thử bằng stub `docker` trong `PATH`, vì docker của người dùng chứa dữ liệu (Postgres, Mongo...). |
 | `lima/dev.yaml`, bước `lima` | `limactl validate lima/dev.yaml`; bước `lima` thử bằng stub `limactl`/`docker`. Không tạo, dừng hay khởi động lại VM `dev` đang chạy. |
 | Hook, secret | `scripts/secrets.sh scan`. Thử hook trong repo nháp với token **giả**, không bao giờ dùng secret thật. |
-| Tài liệu | Chạy thử các lệnh trong đó. |
+| Tài liệu | Chạy thử các lệnh trong đó. Link tương đối phải trỏ tới file có thật; link trong `docs/` tính từ thư mục `docs/`. |
 
-Mọi PR: đọc lại `git diff --stat`, `scripts/secrets.sh scan`, và cập nhật README khi đổi bố cục, bước cài hay lệnh.
+Mọi PR: đọc lại `git diff --stat`, `scripts/secrets.sh scan`, thêm dòng vào `CHANGELOG.md`, và cập nhật README hoặc file `docs/` liên quan khi đổi bố cục, bước cài hay lệnh.
 
 ## Nâng cấp
 
@@ -75,6 +76,7 @@ Phạm vi: Homebrew (`brew outdated`), runtime mise (`mise outdated`), plugin Ne
 ## Commit và PR
 
 - **Commit:** tiếng Anh, dạng `<khu vực>: <việc làm, động từ nguyên mẫu>` như lịch sử (`nvim: update plugins`, `mise: add dotnet`). Thân bài giải thích *vì sao*. Mỗi commit một ý. Commit tự ký SSH. Không thêm dòng ghi công AI (quy tắc 6).
+- **CHANGELOG:** PR đổi thứ người dùng thấy (cấu hình, gói, bước cài, script, tài liệu) thêm dòng tiếng Việt vào [CHANGELOG.md](CHANGELOG.md) dưới ngày hôm nay (`## YYYY-MM-DD`, ngày mới nhất ở trên), đúng nhóm Thêm / Đổi / Sửa / Bỏ. Viết điều người dùng nhận được, không chép commit message; cuối dòng là `[#<số PR>]`, thêm định nghĩa link ở cuối file. Số PR có sau khi tạo PR, nên thêm dòng bằng một commit tiếp trên cùng nhánh. PR chỉ đụng CI hay quy trình nội bộ thì không cần.
 - **Đẩy:** `git push -u origin HEAD` (hook pre-push chạy gitleaks).
 - **Tạo PR:** trước đó `gh auth status`: tài khoản đang active phải là chủ remote (`phonglh-tvb`); sai thì báo người dùng, đừng tự `gh auth switch`. Rồi `gh pr create --base master --title "<như commit>" --body-file <file>`, nội dung theo [.github/pull_request_template.md](.github/pull_request_template.md), tiếng Việt, không thêm dòng "Generated with ...".
 - **Merge:** tự merge (`gh pr merge --squash`) khi đủ cả bốn điều kiện: (1) PR đúng việc người dùng đã yêu cầu hoặc duyệt; (2) phần Kiểm chứng đã chạy và ghi thật, cái chưa kiểm được thì nói rõ; (3) gitleaks sạch, CI xanh (`gh pr checks`; chờ chạy xong, không merge khi còn đang chạy) và GitHub báo `MERGEABLE` / `CLEAN`; (4) PR không có câu hỏi chặn (câu hỏi không chặn thì để ở mục "Cần bạn quyết"). Thiếu một điều kiện thì dừng và báo người dùng. Không dùng `--admin`, không xoá nhánh remote khi chưa được nói. Merge xong thì `git worktree remove`, rồi báo link và kết quả.
@@ -102,6 +104,8 @@ Phạm vi: Homebrew (`brew outdated`), runtime mise (`mise outdated`), plugin Ne
 | VM Lima chạy Docker | `lima/dev.yaml` (chỉ là khuôn tạo VM; sửa không đổi VM đang chạy) |
 | Dọn Docker | `scripts/docker-clean.sh` |
 | Mặc định SSH dùng chung | `config/ssh/defaults.conf` (không bao giờ đưa host, IP, khoá vào repo) |
+| Tài liệu theo mảng | `docs/neovim.md`, `docs/docker.md`, `docs/shell.md`, `docs/linux.md`, `docs/secrets.md`. README chỉ giữ cài mới, mục lục tài liệu, bố cục và việc thường làm |
+| Spec, lịch sử thay đổi | `docs/specs/` (số kế tiếp, thêm vào bảng trong `docs/specs/README.md`), `CHANGELOG.md` |
 
 ## Quy ước code
 
@@ -112,4 +116,4 @@ Phạm vi: Homebrew (`brew outdated`), runtime mise (`mise outdated`), plugin Ne
 
 ## Giữ file này đúng
 
-Đổi quy ước, bố cục hay bước cài thì cập nhật file này và README trong cùng PR. Chỉ ghi điều không đọc ra được từ code.
+Đổi quy ước, bố cục hay bước cài thì cập nhật file này, README và file `docs/` liên quan trong cùng PR. Chỉ ghi điều không đọc ra được từ code.

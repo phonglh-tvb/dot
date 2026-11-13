@@ -4,7 +4,7 @@
 
 ## Vì sao
 
-<!-- Yêu cầu hoặc lỗi cần xử lý. Phân tích ngắn: đã xem gì, đã cân nhắc hướng nào, vì sao chọn hướng này. -->
+<!-- Yêu cầu hoặc lỗi cần xử lý. Phân tích ngắn: đã xem gì, đã cân nhắc hướng nào, vì sao chọn hướng này. Việc lớn thì link spec ở docs/specs/. -->
 
 ## Thay đổi
 
@@ -29,4 +29,5 @@
 <!-- git pull ở checkout chính (cấu hình là symlink vào đó), cùng lệnh cần chạy lại: ./install.sh nvim, scripts/link.sh ... Bỏ trống nếu không có. -->
 
 - [ ] Diff, commit message và mô tả này không chứa giá trị secret
-- [ ] README / AGENTS.md đã cập nhật nếu đổi bố cục, bước cài hoặc quy ước
+- [ ] README, `docs/` / AGENTS.md đã cập nhật nếu đổi bố cục, bước cài hoặc quy ước
+- [ ] CHANGELOG.md có dòng cho PR này (bỏ qua nếu chỉ đổi CI hay quy trình nội bộ)
