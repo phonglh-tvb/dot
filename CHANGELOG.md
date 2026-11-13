@@ -8,6 +8,7 @@ Cách ghi một dòng mới: mục Commit và PR trong [AGENTS.md](AGENTS.md).
 
 ### Thêm
 
+- SQL Server 2022 trong `docker/docker-compose.yml`: profile `mssql`, cổng 1433, container `mssql-dev`, volume `mssql-data`; mật khẩu `sa` lấy từ biến `MSSQL_SA_PASSWORD`, không có mặc định. [#23]
 - `CHANGELOG.md` (file này) và `docs/specs/` để viết spec trước khi làm việc lớn; spec đầu tiên là [SQL Server trên VM Lima](docs/specs/0001-lima-mssql.md). [#22]
 
 ### Đổi
@@ -102,6 +103,7 @@ Cách ghi một dòng mới: mục Commit và PR trong [AGENTS.md](AGENTS.md).
 
 - Tên người dùng git. [1434707]
 
+[#23]: https://github.com/phonglh-tvb/dot/pull/23
 [#22]: https://github.com/phonglh-tvb/dot/pull/22
 [#21]: https://github.com/phonglh-tvb/dot/pull/21
 [#20]: https://github.com/phonglh-tvb/dot/pull/20

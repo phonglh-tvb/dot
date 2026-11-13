@@ -116,4 +116,4 @@ Lệnh `docker run` ở trên được viết lại khi đưa spec vào repo (b�
 
 ## Câu hỏi mở
 
-- `mssql-dev` chưa có trong [docker/docker-compose.yml](../../docker/docker-compose.yml) như Postgres, MySQL; thêm vào (sau một profile, vì image nặng và chạy qua emulation) thì không phải nhớ lệnh `docker run`.
+- ~~`mssql-dev` chưa có trong [docker/docker-compose.yml](../../docker/docker-compose.yml) như Postgres, MySQL; thêm vào (sau một profile, vì image nặng và chạy qua emulation) thì không phải nhớ lệnh `docker run`.~~ Đã làm ở [#23](https://github.com/phonglh-tvb/dot/pull/23): service `mssql` sau profile `mssql`, giữ tên container `mssql-dev` và volume `mssql-data`, image ghim `2022-CU28-ubuntu-22.04`. Cách chạy ở [docs/docker.md](../docker.md).
