@@ -1,30 +1,54 @@
-# theme = dark:Rose Pine Moon,light:Rose Pine Dawn
+# Reference: ghostty +show-config --default --docs · reload: cmd+shift+,
+
+# Appearance
+# theme = dark:Rose Pine,light:Rose Pine Dawn
 theme = Rose Pine
-font-family = "MartianMono Nerd Font Mono"
-font-size = 12
-adjust-cell-height = 20%
-
+# Same font as the iTerm2 profile and the one install.sh recommends
+font-family = "JetBrainsMonoNL Nerd Font Mono"
+font-size = 14
+adjust-cell-height = 10%
 background-opacity = 1
+# background-opacity = 0.95
+# background-blur = 20
 
-# Optional: Add background blur for a nicer transparent effect
-#background-blur = 20
-
-# Hide the title bar on macOS
+# Window
 macos-titlebar-style = tabs
+# Open full size directly: zooming a small window up is what left a blank
+# strip under the title bar in iTerm2
+maximize = true
+window-save-state = always
+window-padding-x = 10
+window-padding-y = 6
+window-padding-balance = true
+# Fill the padding with the edge cell colour so tmux's status bar and
+# full-screen TUIs reach the window edge
+window-padding-color = extend
+unfocused-split-opacity = 0.85
+resize-overlay = never
 
-# Window size - always open with consistent dimensions
-# Size is in terminal grid cells (characters wide by lines high)
-window-width = 160
-window-height = 50
-
-# Fix backspace key issues
-term = xterm-256color
-
-# Explicit keybindings for backspace to ensure it works correctly
-keybind = backspace=text:\x7f
-keybind = ctrl+backspace=text:\x08
-
+# Cursor
 cursor-style = block
 cursor-style-blink = true
-shell-integration-features = no-cursor
+
+# Keep TERM=xterm-ghostty locally (its terminfo has truecolor and backspace=^?,
+# unlike macOS xterm-256color whose kbs=^H). Over ssh, install the terminfo on
+# the host or fall back to xterm-256color there.
+# no-cursor: keep the block cursor at the fish prompt
+shell-integration-features = no-cursor,sudo,ssh-env,ssh-terminfo
+# Fallback if a VM or container shell still misbehaves outside tmux:
+# term = xterm-256color
+
+# Input
+# Left Option sends Alt for fish/tmux/nvim bindings; right Option still types
+# special characters
+macos-option-as-alt = left
+mouse-hide-while-typing = true
+copy-on-select = clipboard
+# Newline for multi-line prompts in Claude Code, also inside tmux
 keybind = shift+enter=text:\n
+
+# Quick terminal from any app. Ctrl+` is taken by VS Code/Cursor and
+# Cmd+Space by Raycast. Global keys need Accessibility permission for Ghostty.
+keybind = global:alt+grave_accent=toggle_quick_terminal
+quick-terminal-position = top
+quick-terminal-animation-duration = 0.15
