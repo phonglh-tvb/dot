@@ -98,7 +98,7 @@ Phạm vi: Homebrew (`brew outdated`), runtime mise (`mise outdated`), plugin Ne
 | Phím tắt Neovim | `lua/mappings.lua` (giữ bộ phím NvChad, không đè phím cũ nếu không được nói rõ), rồi cập nhật bảng phím trong `config/nvim/README.md` |
 | Alias, hàm, biến fish | `config/fish/` (`conf.d/*.fish` tự nạp) |
 | Zsh (shell của công cụ và IDE) | `config/.zshenv`, `.zprofile`, `.zshrc`: giữ tối thiểu, không oh-my-zsh. Thử bằng `ZDOTDIR=<worktree>/config zsh -l -i` trong môi trường sạch (`env -i`), không đè lên `~/.zshrc` thật |
-| Git | `config/.gitconfig`, `config/.gitignore_global` |
+| Git | `config/.gitconfig`, `config/.gitalias` (alias, nhớ cập nhật bảng trong `docs/git.md`), `config/.gitignore_global` |
 | Quy ước commit, câu hỏi của `cz` | `.cz.toml` ở gốc repo; gói `commitizen` trong `Brewfile` |
 | Bước cài mới | `install.sh`: thêm vào `STEPS` (đặt theo hệ điều hành ở đầu file), hàm `step_<tên>`, ghi chú đầu file, bảng trong README |
 | Secret, hook | `scripts/secrets.sh`, `.githooks/`, `.gitleaks.toml`, `docs/secrets.md` |
@@ -106,7 +106,7 @@ Phạm vi: Homebrew (`brew outdated`), runtime mise (`mise outdated`), plugin Ne
 | VM Lima chạy Docker | `lima/dev.yaml` (chỉ là khuôn tạo VM; sửa không đổi VM đang chạy) |
 | Dọn Docker | `scripts/docker-clean.sh` |
 | Mặc định SSH dùng chung | `config/ssh/defaults.conf` (không bao giờ đưa host, IP, khoá vào repo) |
-| Tài liệu theo mảng | `docs/neovim.md`, `docs/docker.md`, `docs/shell.md`, `docs/linux.md`, `docs/secrets.md`. README chỉ giữ cài mới, mục lục tài liệu, bố cục và việc thường làm |
+| Tài liệu theo mảng | `docs/neovim.md`, `docs/docker.md`, `docs/shell.md`, `docs/git.md`, `docs/linux.md`, `docs/secrets.md`. README chỉ giữ cài mới, mục lục tài liệu, bố cục và việc thường làm |
 | Spec, lịch sử thay đổi | `docs/specs/` (số kế tiếp, thêm vào bảng trong `docs/specs/README.md`), `CHANGELOG.md` |
 
 ## Quy ước code
