@@ -42,7 +42,7 @@ git fetch origin
 git worktree add --no-track ../dot-<slug> -b <loại>/<slug> origin/master
 ```
 
-Tên nhánh: `feat/`, `fix/`, `upgrade/`, `docs/`, `chore/` rồi tới mô tả ngắn; tiền tố nhánh không phải loại commit (nhánh `upgrade/brew` thì commit là `build(brew): ...`). Một PR một việc; việc phụ thuộc nhau thì chia PR nhỏ và nêu thứ tự merge. Nhánh PR cần theo kịp `master` (xung đột, hoặc PR khác vừa merge): merge `origin/master` vào nhánh, không rebase rồi force-push. Sau khi PR đã merge: `git worktree remove ../dot-<slug>`.
+Tên nhánh: `feat/`, `fix/`, `upgrade/`, `docs/`, `chore/` rồi tới mô tả ngắn; tiền tố nhánh không phải loại commit (nhánh `upgrade/brew` thì commit là `build(brew): ...`). Một PR một việc; việc phụ thuộc nhau thì chia PR nhỏ và nêu thứ tự merge. Nhánh PR cần theo kịp `master` (xung đột, hoặc PR khác vừa merge): merge `origin/master` vào nhánh, không rebase rồi force-push. Sau khi PR đã merge: `git worktree remove ../dot-<slug>`. Hàm fish `wt` liệt kê worktree đang có rồi `cd` vào cái được chọn.
 
 ## Kiểm chứng
 
