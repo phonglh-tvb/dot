@@ -4,6 +4,16 @@ Những thay đổi đáng kể của repo, mới nhất ở trên. Repo không 
 
 Cách ghi một dòng mới: mục Commit và PR trong [AGENTS.md](AGENTS.md).
 
+## 2026-11-15
+
+### Thêm
+
+- `cz` (commitizen) trong `Brewfile` và `.cz.toml` ở gốc repo: `cz c` hỏi loại, khu vực, mô tả rồi ghép thành commit message; chọn loại bằng một phím, commit bị hook chặn thì lần sau hỏi dùng lại message vừa gõ. `cz check -m "<message>"` kiểm message gõ tay. [#24]
+
+### Đổi
+
+- Commit message của repo theo [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/): `feat(nvim): add C# support` thay cho `nvim: add C# support`; gói và runtime dùng loại `build`. Quy ước đầy đủ ở [AGENTS.md](AGENTS.md); lịch sử cũ giữ nguyên, không sửa lại. [#24]
+
 ## 2026-11-13
 
 ### Thêm
@@ -103,6 +113,7 @@ Cách ghi một dòng mới: mục Commit và PR trong [AGENTS.md](AGENTS.md).
 
 - Tên người dùng git. [1434707]
 
+[#24]: https://github.com/phonglh-tvb/dot/pull/24
 [#23]: https://github.com/phonglh-tvb/dot/pull/23
 [#22]: https://github.com/phonglh-tvb/dot/pull/22
 [#21]: https://github.com/phonglh-tvb/dot/pull/21
