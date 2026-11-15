@@ -14,7 +14,8 @@ lua/plugins.lua          danh sách plugin (vim.pack) + hook build
 lua/options.lua          tuỳ chọn (gồm mặc định NvChad đã chép lại)
 lua/mappings.lua         phím tắt (giữ nguyên bộ phím NvChad)
 lua/autocmds.lua         indent theo ngôn ngữ, viết tài liệu, Java
-lua/configs/             lspconfig, conform, dap, jdtls, rust, scaffold (:Scaffold), tools (danh sách Mason), ui, writing
+lua/configs/             lspconfig, conform, dap, jdtls, reading, rust, scaffold (:Scaffold), tools (danh sách Mason), ui, writing
+after/lsp/<tên>.lua      cấu hình riêng của từng LSP server (xem mục LSP bên dưới)
 nvim-pack-lock.json      commit của từng plugin (đưa vào git)
 README.md                cách dùng: phím tắt và quy trình làm việc
 ```
@@ -25,6 +26,13 @@ README.md                cách dùng: phím tắt và quy trình làm việc
 - Cập nhật plugin: `:lua vim.pack.update()`, xem thay đổi, `:write` để chấp nhận, rồi commit lockfile. Hoàn lại: `git checkout HEAD -- nvim-pack-lock.json` rồi `:restart`.
 - Công cụ (LSP, formatter, debug adapter) khai báo một chỗ trong `lua/configs/tools.lua`; `mason-tool-installer` tự cài những gói còn thiếu. Cài lại bằng tay: `:MasonToolsInstall`.
 - Cài plugin bị ngắt giữa chừng: khởi động sau sẽ tự xoá thư mục hỏng và cài lại.
+
+## LSP
+
+- `lua/configs/lspconfig.lua` giữ phần dùng chung: danh sách server đưa cho `vim.lsp.enable`, cấu hình `"*"` (tắt semantic tokens), và `LspAttach` (completion gốc của Neovim, phím tắt, tắt `document_color` vì colorify của nvchad/ui đã lo).
+- Cấu hình riêng của từng server ở `after/lsp/<tên>.lua`, mỗi file `return` một bảng. Neovim nạp mọi `lsp/<tên>.lua` trên runtimepath và `after/` nạp sau cùng, nên bảng này merge **lên** dữ liệu `lsp/<tên>.lua` của nvim-lspconfig. Thêm server mới: thêm tên vào danh sách trong `lspconfig.lua`, cần sửa gì thì tạo thêm file trong `after/lsp/`.
+- Hai file là định nghĩa trọn vẹn vì nvim-lspconfig không có: `after/lsp/roslyn.lua` (nvim-lspconfig chỉ có `roslyn_ls`, không hỗ trợ Razor; server do roslyn.nvim tự bật, không qua `vim.lsp.enable`) và `after/lsp/odoo_ls.lua`.
+- Sửa `after/lsp/` xong, cách chắc nhất để biết không đổi hành vi: dump `vim.lsp.config[<tên>]` của mọi server ra file trước và sau rồi `diff` (xem bảng Kiểm chứng trong [AGENTS.md](../AGENTS.md)).
 
 ## C# / .NET
 
