@@ -64,6 +64,11 @@ vim.pack.add({
   gh "windwp/nvim-autopairs",
   gh "windwp/nvim-ts-autotag", -- đóng thẻ tự động; Neovim chỉ có sẵn phần đổi tên thẻ (linked editing range)
 
+  -- Đọc code: nhãn TODO / FIXME trong comment, màu hiện ngay tại chỗ, link GitHub của dòng đang đứng
+  gh "folke/todo-comments.nvim",
+  gh "brenoprata10/nvim-highlight-colors",
+  gh "linrongbin16/gitlinker.nvim", -- cần Neovim 0.12
+
   -- Ngôn ngữ: parser treesitter, cấu hình LSP (chỉ lấy dữ liệu lsp/*.lua), format, trình cài công cụ
   { src = gh "nvim-treesitter/nvim-treesitter", version = "main" },
   gh "neovim/nvim-lspconfig",
@@ -105,6 +110,7 @@ end
 require "nvchad"
 
 require "configs.ui"
+require "configs.reading"
 require("conform").setup(require "configs.conform")
 require "configs.mason"
 require "configs.writing"
