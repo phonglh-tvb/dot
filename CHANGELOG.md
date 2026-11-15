@@ -21,9 +21,9 @@ Cách ghi một dòng mới: mục Commit và PR trong [AGENTS.md](AGENTS.md).
 
 ### Đổi
 
+- LSP trong Neovim bớt làm phiền: `lua_ls` không còn hiện hộp thoại hỏi "configure your work environment" khi gặp chữ như `love.` hay `ngx.`; `cssls` không còn cảnh báo khối CSS / SCSS / Less rỗng (các lỗi khác vẫn báo). [#32]
 - Float của Neovim trước đây không viền (hover `K`, popup gitsigns, Mason) nay có viền `single`, cùng kiểu với các float NvChad vẽ sẵn. [#31]
 - Cấu hình LSP của Neovim tách theo server: `lua/configs/lspconfig.lua` chỉ còn phần dùng chung, mỗi server một file `after/lsp/<tên>.lua`. Hành vi không đổi. [#29]
-
 - mise đọc `.nvmrc` và `.node-version` của từng project, nên node theo bản project ghi thay vì bản `latest` toàn cục. Project ghi bản chưa cài thì lần đầu vào đó mise tự tải. [#27]
 - Commit message của repo theo [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/): `feat(nvim): add C# support` thay cho `nvim: add C# support`; gói và runtime dùng loại `build`. Quy ước đầy đủ ở [AGENTS.md](AGENTS.md); lịch sử cũ giữ nguyên, không sửa lại. [#24]
 
@@ -131,6 +131,7 @@ Cách ghi một dòng mới: mục Commit và PR trong [AGENTS.md](AGENTS.md).
 
 - Tên người dùng git. [1434707]
 
+[#32]: https://github.com/phonglh-tvb/dot/pull/32
 [#31]: https://github.com/phonglh-tvb/dot/pull/31
 [#30]: https://github.com/phonglh-tvb/dot/pull/30
 [#29]: https://github.com/phonglh-tvb/dot/pull/29
