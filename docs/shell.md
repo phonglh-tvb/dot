@@ -6,6 +6,36 @@ Shell tương tác chính là fish (`config/fish`). Zsh vẫn có cấu hình t�
 
 Những chỗ gắn với macOS trong fish, tmux và git đã có nhánh cho Linux, xem [linux.md](linux.md).
 
+### Hàm fish
+
+`config/fish/functions/*.fish` tự nạp khi gọi lần đầu (một file một hàm, trùng tên hàm).
+
+| Hàm | Làm gì |
+|---|---|
+| `cpwd` | chép đường dẫn thư mục hiện tại vào clipboard, `$HOME` rút thành `~`; chọn `pbcopy` / `wl-copy` / `xclip` theo máy |
+| `wt` | liệt kê worktree của repo hiện tại (`nhánh → đường dẫn`), chọn bằng fzf rồi `cd` vào — repo này làm việc theo worktree, xem [AGENTS.md](../AGENTS.md) |
+| `pkg-scan` | quét một gói npm trước khi cài (socket.dev, Trivy, OSV, `npm audit`) |
+| `pkg-scan-docker` | như trên nhưng chạy trong container `pkg-scanner` |
+| `safe-npm` / `safe-pnpm` | bọc `npm` / `pnpm`: quét trước khi `install` / `add`. Chỉ chạy khi `PKG_SECURITY_ENABLED` là `1`, mặc định `0` nên không đổi gì |
+
+### Runtime do mise quản lý
+
+Hai shell bật mise theo hai cách khác nhau, nên hành vi cũng khác:
+
+- **zsh**: `config/.zshenv` → `.zprofile` chạy `mise activate zsh --shims`. PATH chỉ có `~/.local/share/mise/shims`; mỗi lệnh gọi mise để tìm đúng bản.
+- **fish**: repo không cấu hình gì — Homebrew tự đặt `/opt/homebrew/share/fish/vendor_conf.d/mise-activate.fish`, chạy `mise activate fish`. PATH được sửa lại mỗi lần đổi thư mục (`MISE_FISH_AUTO_ACTIVATE=0` để tắt).
+
+Phiên bản khai báo ở [config/mise/config.toml](../config/mise/config.toml). Ngoài file đó, mise còn đọc
+`.nvmrc` và `.node-version` của từng project vì `idiomatic_version_file_enable_tools = ["node"]`:
+
+```sh
+mise current node     # bản đang dùng ở thư mục này
+mise ls node          # các bản đã cài
+```
+
+> Project nào ghi một bản node **chưa cài** thì lần đầu `cd` vào đó mise sẽ tự tải bản ấy rồi mới chạy
+> (node 22 mất khoảng 7 giây, gần 190 MB). Không muốn vậy thì bỏ khoá đó khỏi `config/mise/config.toml`.
+
 ## tmux
 
 Prefix là `C-f`; `C-f C-f` gửi `C-f` thật xuống ứng dụng. Cấu hình ở
