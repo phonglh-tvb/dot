@@ -81,6 +81,94 @@ map("n", "<leader>gL", "<cmd>GitLink!<CR>", { desc = "gitlinker open github link
 map("x", "<leader>gl", ":GitLink<CR>", { desc = "gitlinker copy github link for selection" })
 map("x", "<leader>gL", ":GitLink!<CR>", { desc = "gitlinker open github link for selection" })
 
+-- gitsigns: nhảy giữa các hunk, xem, stage, blame. Trong diff mode ]c / [c giữ nghĩa gốc của Neovim
+map("n", "]c", function()
+  if vim.wo.diff then
+    vim.cmd.normal { "]c", bang = true }
+  else
+    require("gitsigns").nav_hunk "next"
+  end
+end, { desc = "git next hunk" })
+map("n", "[c", function()
+  if vim.wo.diff then
+    vim.cmd.normal { "[c", bang = true }
+  else
+    require("gitsigns").nav_hunk "prev"
+  end
+end, { desc = "git prev hunk" })
+map("n", "<leader>gp", function()
+  require("gitsigns").preview_hunk()
+end, { desc = "git preview hunk" })
+-- gọi trên hunk đã stage thì bỏ stage
+map("n", "<leader>gh", function()
+  require("gitsigns").stage_hunk()
+end, { desc = "git stage / unstage hunk" })
+map("x", "<leader>gh", function()
+  require("gitsigns").stage_hunk { vim.fn.line ".", vim.fn.line "v" }
+end, { desc = "git stage / unstage selected lines" })
+map("n", "<leader>gb", function()
+  require("gitsigns").blame_line { full = true }
+end, { desc = "git blame line" })
+map("n", "<leader>gB", function()
+  require("gitsigns").blame()
+end, { desc = "git blame buffer" })
+
+-- Chép vị trí để dán vào Claude Code (@path#L42), PR, Jira. Ở visual mode lấy cả khoảng dòng đang chọn;
+-- line "v" ngoài visual mode chính là dòng con trỏ.
+local function selected_lines()
+  local first, last = vim.fn.line "v", vim.fn.line "."
+  if first > last then
+    first, last = last, first
+  end
+  return first, last
+end
+
+local function copy(text, msg)
+  vim.fn.setreg("+", text)
+  if vim.fn.mode():find "^[vV\22]" then
+    vim.api.nvim_feedkeys(vim.keycode "<Esc>", "nx", false)
+  end
+  vim.notify(msg or ("đã chép " .. text))
+end
+
+local function copy_path(modifier)
+  return function()
+    local name = vim.api.nvim_buf_get_name(0)
+    if name == "" then
+      return vim.notify("buffer chưa có tên file", vim.log.levels.WARN)
+    end
+    local first, last = selected_lines()
+    local lines = first == last and ("#L" .. first) or ("#L%d-%d"):format(first, last)
+    copy(vim.fn.fnamemodify(name, modifier) .. lines)
+  end
+end
+
+map({ "n", "x" }, "<leader>yf", copy_path ":.", { desc = "copy relative path with line" })
+map({ "n", "x" }, "<leader>yp", copy_path ":p", { desc = "copy absolute path with line" })
+
+-- Vùng chọn thành khối code Markdown kèm tên file và dòng đầu, dán vào chat hay Jira là đủ ngữ cảnh
+map("x", "<leader>cc", function()
+  local name = vim.api.nvim_buf_get_name(0)
+  if name == "" then
+    return vim.notify("buffer chưa có tên file", vim.log.levels.WARN)
+  end
+  local first, last = selected_lines()
+  local lines = vim.api.nvim_buf_get_lines(0, first - 1, last, false)
+  -- rào dài hơn mọi chuỗi ``` có sẵn trong đoạn (vd. chép từ file Markdown) để khối không bị cắt giữa chừng
+  local fence = "```"
+  for _, line in ipairs(lines) do
+    for ticks in line:gmatch "`+" do
+      if #ticks >= #fence then
+        fence = ticks .. "`"
+      end
+    end
+  end
+  local lang = ({ typescriptreact = "tsx", javascriptreact = "jsx" })[vim.bo.filetype] or vim.bo.filetype
+  table.insert(lines, 1, ('%s%s filename="%s" line=%d'):format(fence, lang, vim.fn.fnamemodify(name, ":."), first))
+  table.insert(lines, fence)
+  copy(table.concat(lines, "\n"), ("đã chép %d dòng thành khối code"):format(last - first + 1))
+end, { desc = "copy selection as markdown code block" })
+
 map("n", "<leader>th", function()
   require("nvchad.themes").open()
 end, { desc = "telescope nvchad themes" })
