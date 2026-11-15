@@ -8,6 +8,9 @@ Cách ghi một dòng mới: mục Commit và PR trong [AGENTS.md](AGENTS.md).
 
 ### Thêm
 
+- Ba plugin Neovim cho việc đọc code: nhãn `TODO` / `FIXME` được tô màu và tìm bằng `Space ft`, nhảy giữa các nhãn bằng `]n` / `[n`; ô màu hiện cạnh giá trị màu và class Tailwind; `Space gl` / `Space gL` chép hoặc mở link GitHub của dòng đang đứng. Phím đầy đủ ở [config/nvim/README.md](config/nvim/README.md). [#28]
+- Hai hàm fish: `wt` chọn worktree của repo hiện tại bằng fzf rồi `cd` vào, `cpwd` chép đường dẫn thư mục hiện tại vào clipboard. [#27]
+- [docs/shell.md](docs/shell.md) có bảng các hàm fish và mục về mise: fish và zsh bật mise theo hai cơ chế khác nhau. [#27]
 - Cấu hình `lazygit` ([config/lazygit/config.yml](config/lazygit/config.yml)): màu Rose Pine như tmux và Neovim, icon Nerd Font, diff đi qua `delta`, không tự fetch, và `<c-n>` ở bảng Files soạn commit bằng `cz`. Đường dẫn cấu hình do `LG_CONFIG_FILE` đặt trong fish và `.zshenv`, vì lazygit trên macOS không đọc `~/.config`. [#26]
 - Phím tmux: `prefix G` mở lazygit trong popup, `prefix O` mở thư mục của pane bằng Finder, `prefix e` đóng mọi pane khác (hỏi lại trước). [#26]
 - [docs/shell.md](docs/shell.md) có mục tmux: bảng phím của repo, phím của plugin, và các phím `Alt` do `tmux-tilish` chiếm. [#26]
@@ -17,6 +20,7 @@ Cách ghi một dòng mới: mục Commit và PR trong [AGENTS.md](AGENTS.md).
 
 ### Đổi
 
+- mise đọc `.nvmrc` và `.node-version` của từng project, nên node theo bản project ghi thay vì bản `latest` toàn cục. Project ghi bản chưa cài thì lần đầu vào đó mise tự tải. [#27]
 - Commit message của repo theo [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/): `feat(nvim): add C# support` thay cho `nvim: add C# support`; gói và runtime dùng loại `build`. Quy ước đầy đủ ở [AGENTS.md](AGENTS.md); lịch sử cũ giữ nguyên, không sửa lại. [#24]
 
 ### Sửa
@@ -122,6 +126,8 @@ Cách ghi một dòng mới: mục Commit và PR trong [AGENTS.md](AGENTS.md).
 
 - Tên người dùng git. [1434707]
 
+[#28]: https://github.com/phonglh-tvb/dot/pull/28
+[#27]: https://github.com/phonglh-tvb/dot/pull/27
 [#26]: https://github.com/phonglh-tvb/dot/pull/26
 [#25]: https://github.com/phonglh-tvb/dot/pull/25
 [#24]: https://github.com/phonglh-tvb/dot/pull/24

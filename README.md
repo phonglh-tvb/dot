@@ -86,6 +86,8 @@ scripts/drift.sh           # máy đang lệch khai báo ở đâu (Homebrew, mi
 scripts/docker-clean.sh    # Docker đang chiếm gì, cái nào dọn được (chỉ liệt kê; thêm --apply để dọn)
 cz c                       # soạn commit theo Conventional Commits (hỏi loại, khu vực, mô tả)
 cz check -m "<message>"    # message gõ tay có đúng quy ước không
+wt                         # chọn worktree của repo rồi cd vào (fzf)
+cpwd                       # chép đường dẫn thư mục hiện tại vào clipboard
 ```
 
 Thêm cấu hình mới: tạo `config/<tên>` rồi chạy `scripts/link.sh`.

@@ -26,6 +26,7 @@ README.md                cách dùng: phím tắt và quy trình làm việc
 - Cập nhật plugin: `:lua vim.pack.update()`, xem thay đổi, `:write` để chấp nhận, rồi commit lockfile. Hoàn lại: `git checkout HEAD -- nvim-pack-lock.json` rồi `:restart`.
 - Công cụ (LSP, formatter, debug adapter) khai báo một chỗ trong `lua/configs/tools.lua`; `mason-tool-installer` tự cài những gói còn thiếu. Cài lại bằng tay: `:MasonToolsInstall`.
 - Cài plugin bị ngắt giữa chừng: khởi động sau sẽ tự xoá thư mục hỏng và cài lại.
+- Ba plugin cho việc đọc code, cấu hình ở `lua/configs/reading.lua`: `todo-comments.nvim` (nhãn trong comment, tìm bằng `:TodoTelescope`), `nvim-highlight-colors` (ô màu cạnh giá trị màu, kể cả class Tailwind), `gitlinker.nvim` (link GitHub của dòng đang đứng, cần Neovim 0.12). Phím ở [config/nvim/README.md](../config/nvim/README.md).
 
 ## LSP
 

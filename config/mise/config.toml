@@ -11,3 +11,8 @@ node = "latest"
 pnpm = "latest"
 python = "latest"
 ruby = "latest"
+
+[settings]
+# Đọc cả .nvmrc và .node-version của từng project (mặc định mise bỏ qua các file này). Project ghi
+# một bản chưa cài thì lần đầu cd vào đó mise tự tải bản ấy rồi mới chạy, xem docs/shell.md.
+idiomatic_version_file_enable_tools = ["node"]
