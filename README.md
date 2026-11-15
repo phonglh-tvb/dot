@@ -65,6 +65,7 @@ lima/dev.yaml      cấu hình VM Lima chạy Docker (macOS)
 docker/            database dev (Postgres, Valkey, Mongo, MySQL, SQL Server, Kafka) và pkg-scanner
 ansible/           role `dot` (gọi scripts/link.sh) và `pkg-security` (trivy, osv-scanner, socket)
 .githooks/         hook gitleaks chặn commit / push chứa secret
+.cz.toml           quy ước commit (Conventional Commits) cho `cz c`
 .github/           mẫu mô tả PR và CI (workflows/ci.yml)
 docs/              tài liệu theo mảng (bảng trên); docs/specs/ chứa spec
 CHANGELOG.md       thay đổi theo ngày, mới nhất ở trên
@@ -81,6 +82,8 @@ scripts/link.sh            # tạo / sửa link
 scripts/link.sh unlink     # gỡ các link của repo này
 scripts/drift.sh           # máy đang lệch khai báo ở đâu (Homebrew, mise), không đổi gì
 scripts/docker-clean.sh    # Docker đang chiếm gì, cái nào dọn được (chỉ liệt kê; thêm --apply để dọn)
+cz c                       # soạn commit theo Conventional Commits (hỏi loại, khu vực, mô tả)
+cz check -m "<message>"    # message gõ tay có đúng quy ước không
 ```
 
 Thêm cấu hình mới: tạo `config/<tên>` rồi chạy `scripts/link.sh`.
