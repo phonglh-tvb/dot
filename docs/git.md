@@ -68,3 +68,35 @@ trong file rồi `git add-unmerged` là xong.
 `merge.tool` **chưa được đặt**, nên `git mergetool` sẽ dùng công cụ mặc định của hệ (trên macOS là
 `opendiff`), không phải nvim. Muốn nvim thì thêm `[merge] tool = nvimdiff` và `[mergetool "nvimdiff"]`
 vào `config/.gitconfig`.
+
+## lazygit
+
+`lazygit` là giao diện TUI cho git: xem diff, stage từng dòng, rebase, xử lý xung đột. Mở bằng `lazygit`,
+hoặc trong tmux là `prefix G` (popup 90% màn hình, mở đúng thư mục của pane — xem [shell.md](shell.md)).
+
+Cấu hình ở `config/lazygit/config.yml`, chỉ ghi những khoá khác mặc định (`lazygit -c` in ra toàn bộ
+cấu hình mặc định để tra):
+
+| Khoá | Vì sao |
+|---|---|
+| `gui.theme.*` | Rose Pine, cùng màu với tmux, Ghostty và Neovim |
+| `gui.nerdFontsVersion: "3"` | không khai báo thì lazygit không vẽ icon dù font đã là Nerd Font |
+| `git.diffRenderers` | diff đi qua `delta` như mọi lệnh git khác; `--{{colorScheme}}` thành `--dark` hay `--light` theo nền terminal, phần còn lại delta đọc từ mục `[delta]` của `~/.gitconfig` |
+| `git.autoFetch: false` | không tự fetch mỗi phút; fetch tay bằng phím `f` |
+| `customCommands` | `<c-n>` ở bảng Files chạy `cz commit` để soạn commit theo Conventional Commits |
+
+**Đường dẫn cấu hình không theo XDG.** Trên macOS lazygit đọc `~/Library/Application Support/lazygit`,
+chỉ trên Linux mới là `~/.config/lazygit`. Vì vậy `config/fish/conf.d/lazygit.fish` và `config/.zshenv`
+đặt biến `LG_CONFIG_FILE` trỏ thẳng vào file đã link, để cả hai hệ dùng chung một file:
+
+```sh
+echo $LG_CONFIG_FILE          # ~/.config/lazygit/config.yml
+lazygit -cd                   # thư mục mặc định của hệ (nơi lazygit ghi state.yml)
+```
+
+Trạng thái của lazygit (`state.yml`, `github_pull_requests.json`) vẫn nằm ở thư mục mặc định đó, không
+vào repo — nên `config/lazygit/` không cần `.link-each`.
+
+Hai khoá hay muốn đổi mà cố ý **không** đặt, vì chúng đổi hành vi mặc định: `gui.mouseEvents: false`
+(để chuột thuộc về tmux, chọn chữ bằng chuột như trong terminal) và `gui.scrollHeight` (mặc định cuộn
+2 dòng một lần, khá chậm khi đọc diff dài).
