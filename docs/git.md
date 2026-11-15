@@ -45,6 +45,15 @@ cz check -m "<message>"    # message gõ tay có đúng quy ước không
 cz example                 # xem một message mẫu
 ```
 
+**`git cz` không phải cách gọi ở đây.** Gói brew có đặt một binary `git-cz`, nhưng nó chỉ là cùng CLI nên
+vẫn đòi subcommand: `git cz` in usage rồi thoát, `git cz -a` báo `Command is required`. Phải là
+`git cz commit -a`, hoặc gọn hơn là `cz c -a`. (`git cz` dạng không cần subcommand là của bản npm
+`commitizen` + adapter, không phải bản commitizen-tools trong `Brewfile`.) Cũng không vá được bằng alias
+`cz = !cz commit`: git thử lệnh ngoài `git-cz` trước khi tra alias, nên binary luôn thắng.
+
+`git cz --help` cũng không ra help mà ra `No manual entry for git-cz`, vì git hiểu đó là yêu cầu mở man
+page. Dùng `cz commit --help`.
+
 ## Diff và merge
 
 `delta` là pager cho mọi lệnh git (`core.pager`), có số dòng và `navigate = true` (dùng `n` / `N` để nhảy giữa các file trong diff).
