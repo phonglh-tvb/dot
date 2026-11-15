@@ -8,6 +8,14 @@ autocmd("FileType", {
   end,
 })
 
+-- Nháy sáng vùng vừa yank để thấy đã chép đúng chưa (nhất là với yi(, yap, y%)
+autocmd("TextYankPost", {
+  group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }),
+  callback = function()
+    vim.hl.on_yank()
+  end,
+})
+
 vim.api.nvim_create_user_command("TSInstallAll", function()
   require("configs.treesitter").install()
 end, {})

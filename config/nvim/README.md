@@ -53,6 +53,33 @@ LSP bị đơ thì `:lsp restart`; kiểm tra bằng `:checkhealth vim.lsp`.
 Nhãn không có dấu ở cột trái (cột đó để dành cho dấu của git và của lỗi), chỉ được tô màu trong comment.
 `]t` / `[t` vẫn là `:tnext` / `:tprevious` của Neovim, không bị đổi.
 
+## Git
+
+Cột trái có dấu cho dòng thêm, sửa, xoá so với git (gitsigns); phần đã stage hiện màu nhạt hơn.
+
+| Phím | Việc |
+|---|---|
+| `]c` / `[c` | Nhảy tới đoạn thay đổi (hunk) sau / trước. Trong diff mode (`:diffsplit`, `git difftool`) vẫn là nhảy giữa các chỗ khác nhau của diff như gốc |
+| `Space gp` | Xem hunk dưới con trỏ (bản cũ và bản mới) trong cửa sổ nổi |
+| `Space gh` | Stage hunk dưới con trỏ; gọi lại trên hunk đã stage thì bỏ stage. Visual mode: chỉ stage các dòng đang chọn |
+| `Space gb` | Dòng này do commit nào, ai, khi nào, kèm message đầy đủ (cửa sổ nổi) |
+| `Space gB` | Blame cả file thành một cột bên trái, cuộn cùng file |
+| `Space gt` | Các file đang thay đổi (Telescope) |
+
+Commit, đẩy, xem lịch sử thì dùng lazygit: `prefix G` trong tmux ([docs/git.md](../../docs/git.md)).
+
+## Chép để dán chỗ khác
+
+Mọi lệnh chép đi thẳng vào clipboard hệ thống; vùng vừa yank nháy sáng một chút để thấy đã chép gì.
+
+| Phím | Việc |
+|---|---|
+| `Space yf` | Chép đường dẫn (tính từ thư mục đang mở nvim) kèm dòng: `src/app.ts#L42`; visual mode ra cả khoảng `#L10-20`. Dán vào PR, Jira, Claude Code |
+| `Space yp` | Như trên nhưng đường dẫn tuyệt đối |
+| `Space cc` | (visual mode) Chép vùng chọn thành khối code Markdown kèm tên file và dòng đầu: ```` ```ts filename="src/app.ts" line=42 ```` |
+| `Space gl` | Chép link GitHub của dòng (xem Đọc code) |
+| `Ctrl-c` | Chép cả file |
+
 ## Terminal trong nvim
 
 | Phím | Việc |
