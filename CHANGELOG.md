@@ -20,7 +20,6 @@ Cách ghi một dòng mới: mục Commit và PR trong [AGENTS.md](AGENTS.md).
 ### Đổi
 
 - mise đọc `.nvmrc` và `.node-version` của từng project, nên node theo bản project ghi thay vì bản `latest` toàn cục. Project ghi bản chưa cài thì lần đầu vào đó mise tự tải. [#27]
-
 - Commit message của repo theo [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/): `feat(nvim): add C# support` thay cho `nvim: add C# support`; gói và runtime dùng loại `build`. Quy ước đầy đủ ở [AGENTS.md](AGENTS.md); lịch sử cũ giữ nguyên, không sửa lại. [#24]
 
 ### Sửa
