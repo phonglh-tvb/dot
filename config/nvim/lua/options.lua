@@ -86,6 +86,9 @@ opt.foldnestmax = 10
 opt.foldenable = false
 opt.autoread = true
 opt.showtabline = 2
+-- Viền cho float không tự chọn viền: hover (K), popup của gitsigns, Mason, which-key. "single" như các float
+-- NvChad đã vẽ viền sẵn (diagnostic, signature, terminal nổi, chọn theme) để mọi float cùng một kiểu.
+opt.winborder = "single"
 
 opt.undofile = true
 opt.undodir = vim.fn.expand "$HOME/.tmp/nvim/undo"
