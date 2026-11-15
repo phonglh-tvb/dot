@@ -33,7 +33,7 @@ Còn vài việc phải làm tay vì cần mật khẩu / đăng nhập (script 
 |---|---|
 | [docs/neovim.md](docs/neovim.md) | Neovim được dựng thế nào: plugin, công cụ, C#, Odoo. Cách dùng hằng ngày (phím tắt) ở [config/nvim/README.md](config/nvim/README.md) |
 | [docs/docker.md](docs/docker.md) | Docker trong VM Lima, database dev, dọn Docker |
-| [docs/shell.md](docs/shell.md) | fish, zsh tối thiểu, SSH |
+| [docs/shell.md](docs/shell.md) | fish, zsh tối thiểu, bảng phím tmux, SSH |
 | [docs/git.md](docs/git.md) | bố cục cấu hình git, bảng alias, commit message bằng `cz`, diff và merge |
 | [docs/linux.md](docs/linux.md) | cài trên Debian, Ubuntu, Pop!_OS khác macOS ở đâu |
 | [docs/secrets.md](docs/secrets.md) | giữ secret ngoài repo: 1Password, sops + age, gitleaks |
@@ -46,7 +46,7 @@ Còn vài việc phải làm tay vì cần mật khẩu / đăng nhập (script 
 ```
 config/            mọi cấu hình, link vào máy theo quy ước bên dưới
   nvim/            Neovim 0.12 thuần (vim.pack) + giao diện NvChad: LSP, format, debug, viết tài liệu
-  fish/ tmux/ ghostty/ karabiner/ ...
+  fish/ tmux/ ghostty/ karabiner/ lazygit/ ...
   gh/ zed/         chỉ link từng file (config.yml, settings.json), xem Quy ước link
   .gitconfig       -> ~/.gitconfig
   .gitalias        -> ~/.gitalias   alias git (docs/git.md)

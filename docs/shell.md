@@ -1,10 +1,44 @@
-# Shell và SSH
+# Shell, tmux và SSH
 
 ## Shell
 
 Shell tương tác chính là fish (`config/fish`). Zsh vẫn có cấu hình tối thiểu vì công cụ và IDE hay chạy zsh: `.zprofile` nạp Homebrew và `mise` (shims, nên `node`, `go`... đúng bản ở mọi nơi), `.zshrc` chỉ có prompt starship, atuin, zoxide, direnv, fzf và vài alias. Không dùng oh-my-zsh.
 
 Những chỗ gắn với macOS trong fish, tmux và git đã có nhánh cho Linux, xem [linux.md](linux.md).
+
+## tmux
+
+Prefix là `C-f`; `C-f C-f` gửi `C-f` thật xuống ứng dụng. Cấu hình ở
+[config/tmux/tmux.conf](../config/tmux/tmux.conf), màu Rose Pine cùng bảng với Ghostty và Neovim.
+
+| Phím | Làm gì |
+|---|---|
+| `prefix r` | nạp lại `tmux.conf` |
+| `prefix Enter` | vào copy mode (vi: `v` chọn, `y` chép) |
+| `prefix \` / `prefix -` | chia dọc / ngang, pane mới giữ thư mục hiện tại |
+| `prefix t` | cửa sổ mới, giữ thư mục hiện tại |
+| `prefix w` | đóng pane |
+| `prefix e` | đóng mọi pane khác trong cửa sổ (hỏi lại trước) |
+| `prefix h` / `prefix l` | cửa sổ trước / sau, giữ phím được |
+| `prefix G` | lazygit trong popup 90% màn hình, mở ở thư mục của pane ([git.md](git.md)) |
+| `prefix O` | mở thư mục của pane bằng Finder (macOS) hoặc `xdg-open` (Linux) |
+| `prefix C-g` | navi: chọn một lệnh rồi dán vào pane vừa rời |
+| `C-h` `C-j` `C-k` `C-l` | nhảy pane không cần prefix; đang ở trong nvim thì phím được gửi cho nvim |
+| `M-,` / `M-.` | đổi chỗ pane với pane kế |
+
+Phím của plugin: `prefix I` / `U` / `M-u` (tpm cài / cập nhật / dọn plugin), `prefix C-s` / `C-r`
+(tmux-resurrect lưu / khôi phục session), `prefix j` (tmux-jump), `prefix y` / `Y` (tmux-yank),
+`prefix g` (mở bảng phím `move` của tmux-tilish).
+
+`tmux-tilish` mang bố cục kiểu i3 và chiếm toàn bộ phím `Alt`: `M-1`…`M-0` chuyển cửa sổ,
+`M-h/j/k/l` chọn pane, `M-H/J/K/L` đổi chỗ pane, `M-s` / `M-v` / `M-t` đổi layout, `M-z` phóng to,
+`M-Enter` pane mới, `M-Q` đóng pane, `M-n` đổi tên cửa sổ, `M-E` detach.
+
+> Vì `run '~/.config/tmux/plugins/tpm/tpm'` nằm ở **cuối** `tmux.conf`, plugin gán phím sau repo. Hai
+> dòng `bind -n 'M-h'`…`'M-l'` (resize pane) trong `tmux.conf` vì thế **không có tác dụng** — tilish gán
+> lại đúng bốn phím đó thành chọn pane. Kiểm bằng `tmux list-keys -T root | grep 'M-h'`.
+
+Lệnh chép vào clipboard chọn theo máy (`pbcopy`, `wl-copy`, `xclip`), xem [linux.md](linux.md).
 
 ## SSH
 
