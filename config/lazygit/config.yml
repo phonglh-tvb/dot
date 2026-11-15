@@ -1,0 +1,33 @@
+# Cấu hình lazygit. Tham chiếu đầy đủ: `lazygit -c` in ra toàn bộ cấu hình mặc định.
+# Chỉ ghi những khoá khác mặc định; biến LG_CONFIG_FILE trỏ lazygit vào file này (xem docs/git.md).
+gui:
+  # Bảng màu Rose Pine, cùng màu với tmux, Ghostty và Neovim để ba lớp trông như một
+  theme:
+    activeBorderColor: ["#c4a7e7", bold]
+    inactiveBorderColor: ["#403d52"]
+    selectedLineBgColor: ["#26233a"]
+    optionsTextColor: ["#9ccfd8"]
+    unstagedChangesColor: ["#eb6f92"]
+    cherryPickedCommitFgColor: ["#f6c177"]
+    cherryPickedCommitBgColor: ["#26233a"]
+  # Font của Ghostty là Nerd Font v3, không khai báo thì lazygit không vẽ icon
+  nerdFontsVersion: "3"
+
+git:
+  # Diff đi qua delta như mọi lệnh git khác (core.pager trong config/.gitconfig).
+  # {{colorScheme}} thành --dark hoặc --light theo nền terminal; các tuỳ chọn còn lại
+  # (line-numbers, syntax theme) delta tự đọc từ mục [delta] của ~/.gitconfig.
+  diffRenderers:
+    - command: delta --{{colorScheme}} --paging=never
+  # Không tự fetch mỗi phút: repo công việc dùng gh làm credential helper, fetch nền
+  # làm chậm và che mất lúc nào thật sự cần mạng. Fetch tay bằng phím f.
+  autoFetch: false
+
+customCommands:
+  # Soạn commit theo Conventional Commits. output: terminal để cz hỏi đáp được.
+  # Dùng <c-n> vì C của lazygit là "commit with editor", không đè phím mặc định nào.
+  - key: <c-n>
+    context: files
+    description: "commit with cz (Conventional Commits)"
+    command: cz commit
+    output: terminal
