@@ -70,6 +70,17 @@ Phím của plugin: `prefix I` / `U` / `M-u` (tpm cài / cập nhật / dọn pl
 
 Lệnh chép vào clipboard chọn theo máy (`pbcopy`, `wl-copy`, `xclip`), xem [linux.md](linux.md).
 
+`TERM` trong pane là `tmux-256color`, để nvim trong tmux in được comment nghiêng và gạch chân cong dưới
+lỗi LSP (`screen-256color` không có hai thứ đó). Gạch chân cong còn cần terminfo của terminal ngoài khai báo
+`Smulx`: `xterm-ghostty` của Ghostty có. Terminal báo `TERM=xterm-256color` (VS Code, Zed, Terminal.app)
+thì không, và tmux bỏ hẳn kiểu gạch đó thay vì lùi về gạch thẳng, nên chữ dưới lỗi không có gạch; muốn
+có thì thêm `set -as terminal-overrides ',*:Smulx=\E[4::%p1%dm'` vào `tmux.conf` (ngoặc **đơn**: trong
+ngoặc kép tmux nuốt `\E` và terminal in ra chữ `E[4:3m`).
+
+Đổi `TERM` chỉ áp cho pane mở sau khi nạp lại cấu hình, pane cũ giữ giá trị cũ. `ssh` từ trong tmux sang
+máy không có terminfo này (máy rất cũ, container tối giản) thì `clear`, `less` báo `unknown terminal type`;
+khi đó dùng `TERM=xterm-256color ssh <host>`.
+
 ## SSH
 
 Repo chỉ giữ phần mặc định dùng chung ([config/ssh/defaults.conf](../config/ssh/defaults.conf): `AddKeysToAgent`, `UseKeychain` có `IgnoreUnknown` nên chạy được cả trên Linux, `ServerAliveInterval`); host, IP, user và khoá của từng máy ở `~/.ssh` và không bao giờ commit. `link.sh` không đụng `~/.ssh`. Muốn dùng thì tự thêm hai dòng vào **cuối** `~/.ssh/config` (xem chú thích trong file; `Match all` cần thiết để Include không bị gắn vào khối `Host` phía trên, và đặt ở cuối để host cụ thể thắng mặc định).
