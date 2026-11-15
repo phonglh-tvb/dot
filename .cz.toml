@@ -1,0 +1,19 @@
+# Quy ước commit của repo: Conventional Commits, sinh bằng `cz c` (gói brew "commitizen" của commitizen-tools).
+# Chỉ dùng cz commit / check / example / schema: repo không đánh số phiên bản nên không dùng cz bump và
+# cz changelog (CHANGELOG.md viết tay theo ngày, xem AGENTS.md). https://commitizen-tools.github.io/commitizen/
+[tool.commitizen]
+name = "cz_conventional_commits"
+
+# Hiện phím tắt cạnh từng loại commit (f = feat, x = fix, d = docs...) để chọn bằng một phím.
+use_shortcuts = true
+
+# Hook pre-commit (gitleaks) hay việc ký SSH mà chặn commit thì lần `cz c` sau hỏi dùng lại message vừa gõ,
+# không phải trả lời lại từ đầu.
+retry_after_failure = true
+
+# Breaking change đánh dấu ngay ở tiêu đề (`feat(fish)!: ...`), không chỉ nằm ở footer.
+breaking_change_exclamation_in_title = true
+
+# Không đặt message_length_limit / body_length_limit ở đây: bản 4.19.3 chỉ nhận hai khoá này từ cờ dòng lệnh
+# (arguments.get lấy được None của argparse nên đè mất giá trị trong config, đã thử). Muốn gập thân bài ở
+# 72 cột thì chạy `cz c --body-length-limit 72`.

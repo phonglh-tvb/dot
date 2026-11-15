@@ -42,7 +42,7 @@ git fetch origin
 git worktree add --no-track ../dot-<slug> -b <loại>/<slug> origin/master
 ```
 
-Tên nhánh: `feat/`, `fix/`, `upgrade/`, `docs/`, `chore/` rồi tới mô tả ngắn. Một PR một việc; việc phụ thuộc nhau thì chia PR nhỏ và nêu thứ tự merge. Nhánh PR cần theo kịp `master` (xung đột, hoặc PR khác vừa merge): merge `origin/master` vào nhánh, không rebase rồi force-push. Sau khi PR đã merge: `git worktree remove ../dot-<slug>`.
+Tên nhánh: `feat/`, `fix/`, `upgrade/`, `docs/`, `chore/` rồi tới mô tả ngắn; tiền tố nhánh không phải loại commit (nhánh `upgrade/brew` thì commit là `build(brew): ...`). Một PR một việc; việc phụ thuộc nhau thì chia PR nhỏ và nêu thứ tự merge. Nhánh PR cần theo kịp `master` (xung đột, hoặc PR khác vừa merge): merge `origin/master` vào nhánh, không rebase rồi force-push. Sau khi PR đã merge: `git worktree remove ../dot-<slug>`.
 
 ## Kiểm chứng
 
@@ -57,6 +57,7 @@ Ghi lại lệnh đã chạy và kết quả thật vào PR. Chưa kiểm đư�
 | Dockerfile, `scripts/docker-clean.sh` | `hadolint <file>` (CI chạy; ngoại lệ có lý do ở `.hadolint.yaml`). Thử `docker-clean.sh` ở chế độ liệt kê trên docker thật (chỉ đọc); `--apply` chỉ thử bằng stub `docker` trong `PATH`, vì docker của người dùng chứa dữ liệu (Postgres, Mongo...). |
 | `lima/dev.yaml`, bước `lima` | `limactl validate lima/dev.yaml`; bước `lima` thử bằng stub `limactl`/`docker`. Không tạo, dừng hay khởi động lại VM `dev` đang chạy. |
 | Hook, secret | `scripts/secrets.sh scan`. Thử hook trong repo nháp với token **giả**, không bao giờ dùng secret thật. |
+| `.cz.toml` | `cz example`, `cz schema`, `cz check -m "<message>"` cho cả message đúng và sai. Thử luồng hỏi đáp bằng `cz c --dry-run` trong **repo nháp** (`git init` ở thư mục tạm), không commit thử vào repo thật. |
 | Tài liệu | Chạy thử các lệnh trong đó. Link tương đối phải trỏ tới file có thật; link trong `docs/` tính từ thư mục `docs/`. |
 
 Mọi PR: đọc lại `git diff --stat`, `scripts/secrets.sh scan`, thêm dòng vào `CHANGELOG.md`, và cập nhật README hoặc file `docs/` liên quan khi đổi bố cục, bước cài hay lệnh.
@@ -75,7 +76,7 @@ Phạm vi: Homebrew (`brew outdated`), runtime mise (`mise outdated`), plugin Ne
 
 ## Commit và PR
 
-- **Commit:** tiếng Anh, dạng `<khu vực>: <việc làm, động từ nguyên mẫu>` như lịch sử (`nvim: update plugins`, `mise: add dotnet`). Thân bài giải thích *vì sao*. Mỗi commit một ý. Commit tự ký SSH. Không thêm dòng ghi công AI (quy tắc 6).
+- **Commit:** tiếng Anh, theo [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/): `<loại>(<khu vực>): <việc làm, động từ nguyên mẫu>`, ví dụ `feat(nvim): add C# support`, `build(mise): add dotnet`, `docs(readme): split the layout section`. Khu vực là phần đang sửa (`nvim`, `fish`, `tmux`, `brew`, `mise`, `docker`, `install`, `ci`...), không rõ thì bỏ trống. Loại chọn trong danh sách của cz: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`; thêm hay nâng cấp gói và runtime (`Brewfile*`, `Aptfile`, `config/mise`) là `build`. Breaking change thì `feat(fish)!: ...` kèm footer `BREAKING CHANGE:`. Soạn bằng `cz c` (commitizen hỏi từng bước theo [.cz.toml](.cz.toml)); gõ tay cũng được, kiểm bằng `cz check -m "<message>"`. Thân bài giải thích *vì sao*, gập ở 72 cột (`cz c --body-length-limit 72` gập hộ). Mỗi commit một ý. Commit tự ký SSH. Không thêm dòng ghi công AI (quy tắc 6). Lịch sử trước 2026-11-15 còn ở dạng cũ `<khu vực>: <việc làm>`, không sửa lại.
 - **CHANGELOG:** PR đổi thứ người dùng thấy (cấu hình, gói, bước cài, script, tài liệu) thêm dòng tiếng Việt vào [CHANGELOG.md](CHANGELOG.md) dưới ngày hôm nay (`## YYYY-MM-DD`, ngày mới nhất ở trên), đúng nhóm Thêm / Đổi / Sửa / Bỏ. Viết điều người dùng nhận được, không chép commit message; cuối dòng là `[#<số PR>]`, thêm định nghĩa link ở cuối file. Số PR có sau khi tạo PR, nên thêm dòng bằng một commit tiếp trên cùng nhánh. PR chỉ đụng CI hay quy trình nội bộ thì không cần.
 - **Đẩy:** `git push -u origin HEAD` (hook pre-push chạy gitleaks).
 - **Tạo PR:** trước đó `gh auth status`: tài khoản đang active phải là chủ remote (`phonglh-tvb`); sai thì báo người dùng, đừng tự `gh auth switch`. Rồi `gh pr create --base master --title "<như commit>" --body-file <file>`, nội dung theo [.github/pull_request_template.md](.github/pull_request_template.md), tiếng Việt, không thêm dòng "Generated with ...".
@@ -98,6 +99,7 @@ Phạm vi: Homebrew (`brew outdated`), runtime mise (`mise outdated`), plugin Ne
 | Alias, hàm, biến fish | `config/fish/` (`conf.d/*.fish` tự nạp) |
 | Zsh (shell của công cụ và IDE) | `config/.zshenv`, `.zprofile`, `.zshrc`: giữ tối thiểu, không oh-my-zsh. Thử bằng `ZDOTDIR=<worktree>/config zsh -l -i` trong môi trường sạch (`env -i`), không đè lên `~/.zshrc` thật |
 | Git | `config/.gitconfig`, `config/.gitignore_global` |
+| Quy ước commit, câu hỏi của `cz` | `.cz.toml` ở gốc repo; gói `commitizen` trong `Brewfile` |
 | Bước cài mới | `install.sh`: thêm vào `STEPS` (đặt theo hệ điều hành ở đầu file), hàm `step_<tên>`, ghi chú đầu file, bảng trong README |
 | Secret, hook | `scripts/secrets.sh`, `.githooks/`, `.gitleaks.toml`, `docs/secrets.md` |
 | Database dev, quét gói | `docker/`, `ansible/` |
