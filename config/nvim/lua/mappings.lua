@@ -66,6 +66,21 @@ map("n", "<leader>cm", "<cmd>Telescope git_commits<CR>", { desc = "telescope git
 map("n", "<leader>gt", "<cmd>Telescope git_status<CR>", { desc = "telescope git status" })
 map("n", "<leader>pt", "<cmd>Telescope terms<CR>", { desc = "telescope pick hidden term" })
 
+-- đọc code: nhãn TODO trong comment, link GitHub của dòng đang đứng
+map("n", "<leader>ft", "<cmd>TodoTelescope<CR>", { desc = "telescope todo comments" })
+-- ]n / [n chứ không phải ]t / [t như README của plugin: Neovim 0.12 đã dùng ]t cho :tnext
+map("n", "]n", function()
+  require("todo-comments").jump_next()
+end, { desc = "next todo comment" })
+map("n", "[n", function()
+  require("todo-comments").jump_prev()
+end, { desc = "prev todo comment" })
+map("n", "<leader>gl", "<cmd>GitLink<CR>", { desc = "gitlinker copy github link" })
+map("n", "<leader>gL", "<cmd>GitLink!<CR>", { desc = "gitlinker open github link" })
+-- dùng ":" (không phải <cmd>) để visual mode tự điền '<,'> làm vùng dòng cho GitLink
+map("x", "<leader>gl", ":GitLink<CR>", { desc = "gitlinker copy github link for selection" })
+map("x", "<leader>gL", ":GitLink!<CR>", { desc = "gitlinker open github link for selection" })
+
 map("n", "<leader>th", function()
   require("nvchad.themes").open()
 end, { desc = "telescope nvchad themes" })

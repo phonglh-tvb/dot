@@ -8,6 +8,7 @@ Cách ghi một dòng mới: mục Commit và PR trong [AGENTS.md](AGENTS.md).
 
 ### Thêm
 
+- Ba plugin Neovim cho việc đọc code: nhãn `TODO` / `FIXME` được tô màu và tìm bằng `Space ft`, nhảy giữa các nhãn bằng `]n` / `[n`; ô màu hiện cạnh giá trị màu và class Tailwind; `Space gl` / `Space gL` chép hoặc mở link GitHub của dòng đang đứng. Phím đầy đủ ở [config/nvim/README.md](config/nvim/README.md). [#28]
 - Hai hàm fish: `wt` chọn worktree của repo hiện tại bằng fzf rồi `cd` vào, `cpwd` chép đường dẫn thư mục hiện tại vào clipboard. [#27]
 - [docs/shell.md](docs/shell.md) có bảng các hàm fish và mục về mise: fish và zsh bật mise theo hai cơ chế khác nhau. [#27]
 - Cấu hình `lazygit` ([config/lazygit/config.yml](config/lazygit/config.yml)): màu Rose Pine như tmux và Neovim, icon Nerd Font, diff đi qua `delta`, không tự fetch, và `<c-n>` ở bảng Files soạn commit bằng `cz`. Đường dẫn cấu hình do `LG_CONFIG_FILE` đặt trong fish và `.zshenv`, vì lazygit trên macOS không đọc `~/.config`. [#26]
@@ -125,6 +126,7 @@ Cách ghi một dòng mới: mục Commit và PR trong [AGENTS.md](AGENTS.md).
 
 - Tên người dùng git. [1434707]
 
+[#28]: https://github.com/phonglh-tvb/dot/pull/28
 [#27]: https://github.com/phonglh-tvb/dot/pull/27
 [#26]: https://github.com/phonglh-tvb/dot/pull/26
 [#25]: https://github.com/phonglh-tvb/dot/pull/25

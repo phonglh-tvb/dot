@@ -40,6 +40,19 @@ Phím leader là `Space`. Bảng dưới đây khớp với `lua/mappings.lua` v
 
 LSP bị đơ thì `:lsp restart`; kiểm tra bằng `:checkhealth vim.lsp`.
 
+## Đọc code
+
+| Phím | Việc |
+|---|---|
+| `Space ft` | Tìm mọi nhãn `TODO`, `FIXME`, `HACK`, `WARN`, `PERF`, `NOTE`, `TEST` trong dự án (Telescope) |
+| `]n` / `[n` | Nhảy tới nhãn sau / nhãn trước trong file đang mở |
+| `Space gl` / `Space gL` | Chép / mở link GitHub của dòng đang đứng (visual mode: của cả vùng chọn) |
+| `:GitLink blame` | Như trên nhưng ra trang blame; `:GitLink default_branch` ghim vào nhánh chính |
+| `:HighlightColors Toggle` | Bật/tắt ô màu hiện cạnh `#eb6f92`, `rgb(...)`, `hsl(...)`, tên màu và class Tailwind |
+
+Nhãn không có dấu ở cột trái (cột đó để dành cho dấu của git và của lỗi), chỉ được tô màu trong comment.
+`]t` / `[t` vẫn là `:tnext` / `:tprevious` của Neovim, không bị đổi.
+
 ## Terminal trong nvim
 
 | Phím | Việc |
