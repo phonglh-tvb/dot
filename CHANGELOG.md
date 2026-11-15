@@ -27,6 +27,7 @@ Cách ghi một dòng mới: mục Commit và PR trong [AGENTS.md](AGENTS.md).
 
 ### Sửa
 
+- Neovim trong tmux in comment nghiêng và gạch chân cong có màu dưới lỗi LSP: `TERM` trong pane đổi từ `screen-256color` (không hỗ trợ hai thứ đó) sang `tmux-256color`. Chỉ pane mở sau khi nạp lại cấu hình mới nhận; gạch chân cong cần terminal ngoài là Ghostty, xem [docs/shell.md](docs/shell.md). [#30]
 - `git ci` trước đây luôn lỗi (`'checkin' is not a git command`), nay là `git commit`. [#25]
 
 ## 2026-11-13
@@ -128,6 +129,7 @@ Cách ghi một dòng mới: mục Commit và PR trong [AGENTS.md](AGENTS.md).
 
 - Tên người dùng git. [1434707]
 
+[#30]: https://github.com/phonglh-tvb/dot/pull/30
 [#29]: https://github.com/phonglh-tvb/dot/pull/29
 [#28]: https://github.com/phonglh-tvb/dot/pull/28
 [#27]: https://github.com/phonglh-tvb/dot/pull/27
