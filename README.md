@@ -34,6 +34,7 @@ Còn vài việc phải làm tay vì cần mật khẩu / đăng nhập (script 
 | [docs/neovim.md](docs/neovim.md) | Neovim được dựng thế nào: plugin, công cụ, C#, Odoo. Cách dùng hằng ngày (phím tắt) ở [config/nvim/README.md](config/nvim/README.md) |
 | [docs/docker.md](docs/docker.md) | Docker trong VM Lima, database dev, dọn Docker |
 | [docs/shell.md](docs/shell.md) | fish, zsh tối thiểu, SSH |
+| [docs/git.md](docs/git.md) | bố cục cấu hình git, bảng alias, commit message bằng `cz`, diff và merge |
 | [docs/linux.md](docs/linux.md) | cài trên Debian, Ubuntu, Pop!_OS khác macOS ở đâu |
 | [docs/secrets.md](docs/secrets.md) | giữ secret ngoài repo: 1Password, sops + age, gitleaks |
 | [docs/specs/](docs/specs/README.md) | spec: thiết kế viết trước khi làm việc lớn, và vì sao chọn hướng đó |
@@ -48,6 +49,7 @@ config/            mọi cấu hình, link vào máy theo quy ước bên dướ
   fish/ tmux/ ghostty/ karabiner/ ...
   gh/ zed/         chỉ link từng file (config.yml, settings.json), xem Quy ước link
   .gitconfig       -> ~/.gitconfig
+  .gitalias        -> ~/.gitalias   alias git (docs/git.md)
   .gitignore_global
   .zshenv .zprofile .zshrc   -> ~/   zsh tối thiểu (docs/shell.md)
 install.sh         dựng máy mới theo từng bước
