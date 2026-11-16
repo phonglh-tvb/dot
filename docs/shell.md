@@ -54,19 +54,22 @@ Prefix là `C-f`; `C-f C-f` gửi `C-f` thật xuống ứng dụng. Cấu hình
 | `prefix O` | mở thư mục của pane bằng Finder (macOS) hoặc `xdg-open` (Linux) |
 | `prefix C-g` | navi: chọn một lệnh rồi dán vào pane vừa rời |
 | `C-h` `C-j` `C-k` `C-l` | nhảy pane không cần prefix; đang ở trong nvim thì phím được gửi cho nvim |
+| `M-h` `M-j` `M-k` `M-l` | đổi kích thước pane: dời biên 3 ô sang trái / xuống / lên / phải, cả trong copy mode. Đang ở trong nvim thì phím được gửi cho nvim (`Alt-h` là terminal ngang của NvChad); muốn đổi cỡ pane nvim thì bấm từ pane bên cạnh hoặc kéo biên bằng chuột |
 | `M-,` / `M-.` | đổi chỗ pane với pane kế |
 
 Phím của plugin: `prefix I` / `U` / `M-u` (tpm cài / cập nhật / dọn plugin), `prefix C-s` / `C-r`
 (tmux-resurrect lưu / khôi phục session), `prefix j` (tmux-jump), `prefix y` / `Y` (tmux-yank),
 `prefix g` (mở bảng phím `move` của tmux-tilish).
 
-`tmux-tilish` mang bố cục kiểu i3 và chiếm toàn bộ phím `Alt`: `M-1`…`M-0` chuyển cửa sổ,
-`M-h/j/k/l` chọn pane, `M-H/J/K/L` đổi chỗ pane, `M-s` / `M-v` / `M-t` đổi layout, `M-z` phóng to,
-`M-Enter` pane mới, `M-Q` đóng pane, `M-n` đổi tên cửa sổ, `M-E` detach.
+`tmux-tilish` mang bố cục kiểu i3 và chiếm gần hết phím `Alt`: `M-1`…`M-0` chuyển cửa sổ,
+`M-H/J/K/L` đổi chỗ pane, `M-s` / `M-v` / `M-t` đổi layout, `M-z` phóng to, `M-Enter` pane mới, `M-Q`
+đóng pane, `M-n` đổi tên cửa sổ, `M-E` detach. Phím Alt của tmux đến trước nvim, nên trong tmux
+`Alt-v` của NvChad (terminal dọc) thành đổi layout.
 
-> Vì `run '~/.config/tmux/plugins/tpm/tpm'` nằm ở **cuối** `tmux.conf`, plugin gán phím sau repo. Hai
-> dòng `bind -n 'M-h'`…`'M-l'` (resize pane) trong `tmux.conf` vì thế **không có tác dụng** — tilish gán
-> lại đúng bốn phím đó thành chọn pane. Kiểm bằng `tmux list-keys -T root | grep 'M-h'`.
+> Plugin được nạp bằng dòng `run '~/.config/tmux/plugins/tpm/tpm'` và gán phím **sau** những gì đứng
+> trước dòng đó, nên trùng phím thì plugin thắng. tilish gán `M-h/j/k/l` thành chọn pane; bốn phím đổi
+> kích thước vì thế đặt **dưới** dòng `run` để thắng lại (chọn pane đã có `C-h/j/k/l`). Muốn giữ phím
+> nào khác với plugin thì cũng đặt dưới dòng đó. Kiểm bằng `tmux list-keys -T root | grep 'M-h'`.
 
 Lệnh chép vào clipboard chọn theo máy (`pbcopy`, `wl-copy`, `xclip`), xem [linux.md](linux.md).
 

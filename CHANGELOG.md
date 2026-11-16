@@ -10,6 +10,10 @@ Cách ghi một dòng mới: mục Commit và PR trong [AGENTS.md](AGENTS.md).
 
 - `git mergetool` (và mục "Open external merge tool" của lazygit, phím `M`) mở nvim thay vì `opendiff`: LOCAL | BASE | REMOTE ở trên, file đang sửa ở dưới; không hỏi trước mỗi file, không để lại file `.orig`. Cách dùng và các chỗ dễ vấp ở [docs/git.md](docs/git.md). [#34]
 
+### Sửa
+
+- `Alt-h` / `Alt-j` / `Alt-k` / `Alt-l` trong tmux đổi kích thước pane như `tmux.conf` vốn định, thay vì chọn pane (tmux-tilish gán đè; chọn pane vẫn là `Ctrl-h/j/k/l`). Trong nvim phím được gửi cho nvim, nên `Alt-h` bật terminal ngang của NvChad lại dùng được trong tmux. [#33]
+
 ## 2026-11-15
 
 ### Thêm
@@ -138,6 +142,7 @@ Cách ghi một dòng mới: mục Commit và PR trong [AGENTS.md](AGENTS.md).
 - Tên người dùng git. [1434707]
 
 [#34]: https://github.com/phonglh-tvb/dot/pull/34
+[#33]: https://github.com/phonglh-tvb/dot/pull/33
 [#32]: https://github.com/phonglh-tvb/dot/pull/32
 [#31]: https://github.com/phonglh-tvb/dot/pull/31
 [#30]: https://github.com/phonglh-tvb/dot/pull/30
