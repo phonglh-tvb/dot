@@ -4,7 +4,7 @@ Cấu hình git của repo này nằm ở ba file, link vào `~` bằng [scripts
 
 | File trong repo | Link tới | Chứa gì |
 |---|---|---|
-| `config/.gitconfig` | `~/.gitconfig` | danh tính, ký commit, `delta` làm pager, difftool `nvimdiff`, `[include]` ba file dưới |
+| `config/.gitconfig` | `~/.gitconfig` | danh tính, ký commit, `delta` làm pager, difftool và mergetool `nvimdiff`, `[include]` ba file dưới |
 | `config/.gitalias` | `~/.gitalias` | chỉ `[alias]`, tách riêng cho dễ đọc (bảng bên dưới) |
 | `config/.gitignore_global` | `~/.gitignore_global` | thứ không bao giờ muốn commit ở bất kỳ repo nào |
 
@@ -65,9 +65,37 @@ git difftool            # mở diff trong nvim (-d), không hỏi xác nhận (d
 `merge.conflictstyle = diff3` nên khối xung đột hiện cả phiên bản gốc, không chỉ hai bên — sửa trực tiếp
 trong file rồi `git add-unmerged` là xong.
 
-`merge.tool` **chưa được đặt**, nên `git mergetool` sẽ dùng công cụ mặc định của hệ (trên macOS là
-`opendiff`), không phải nvim. Muốn nvim thì thêm `[merge] tool = nvimdiff` và `[mergetool "nvimdiff"]`
-vào `config/.gitconfig`.
+Muốn xem ba phiên bản cạnh nhau thì dùng `git mergetool` (`merge.tool = nvimdiff`, bản có sẵn trong git).
+Lệnh này mở nvim lần lượt cho từng file đang xung đột, không hỏi trước (`mergetool.prompt = false`), với bố
+cục bốn cửa sổ; con trỏ nằm ở MERGED:
+
+```
+LOCAL (buffer 1, nhánh đang đứng) | BASE (2, tổ tiên chung) | REMOTE (3, nhánh merge vào)
+MERGED (4, file thật, sửa ở đây)
+```
+
+| Trong nvim | Làm gì |
+|---|---|
+| `]c` / `[c` | nhảy tới chỗ khác nhau kế / trước; với khối xung đột là dòng `<<<<<<<` |
+| `V/^>>>>>>>` Enter, rồi `:diffget 1` / `2` / `3` | chọn cả khối từ dòng `<<<<<<<` tới `>>>>>>>`, thay bằng bản LOCAL / BASE / REMOTE |
+| sửa tay | khối diff3 đã có đủ ba bản: giữ phần cần, xoá các dòng `<<<<<<<` `\|\|\|\|\|\|\|` `=======` `>>>>>>>` |
+| `:wqa` | lưu, git đánh dấu file đã giải quyết rồi mở file kế |
+| `:cq` | bỏ dở file này, file giữ nguyên xung đột; còn file khác thì git hỏi có làm tiếp không |
+
+Bốn chỗ dễ vấp:
+
+- `:diffget` mà không chọn cả khối thì chỉ lấy một mẩu (vd. chỉ xoá dòng `<<<<<<<`), vì nvim chia khối
+  xung đột thành nhiều đoạn khác nhau nhỏ.
+- Gọi buffer bằng số, không bằng tên: nvim so tên với cả đường dẫn và trên macOS không phân biệt hoa
+  thường, nên `:diffget RE` dễ khớp nhiều buffer (`E93: More than one match`).
+- Git tin mã thoát của nvim: `:wqa` là file được tính đã giải quyết, kể cả khi còn sót dấu xung đột.
+- Khi `git rebase` thì hai bên đổi chỗ: LOCAL là nhánh đang rebase lên, REMOTE là commit của bạn đang được
+  áp lại.
+
+Trong lazygit, phím `M` ở bảng Files có mục "Open external merge tool", cũng là `git mergetool`.
+
+`mergetool.keepBackup = false`: không để lại file `<tên>.orig` (bản còn dấu xung đột) sau khi xong. File
+đó không bị `.gitignore_global` bỏ qua, nên dễ lọt vào commit khi `git add -A`.
 
 ## lazygit
 

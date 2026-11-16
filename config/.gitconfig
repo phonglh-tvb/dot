@@ -29,6 +29,11 @@
 
 [merge]
     conflictstyle = diff3
+    tool = nvimdiff
+
+[mergetool]
+    prompt = false
+    keepBackup = false
 
 [diff]
     colorMoved = default
