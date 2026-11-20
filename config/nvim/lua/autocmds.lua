@@ -60,12 +60,12 @@ autocmd("FileType", {
   end,
 })
 
--- Viết tài liệu: markdown / latex / typst
+-- Viết tài liệu: markdown
 local prose = vim.api.nvim_create_augroup("Prose", { clear = true })
 
 autocmd("FileType", {
   group = prose,
-  pattern = { "markdown", "tex", "plaintex", "typst" },
+  pattern = "markdown",
   callback = function(args)
     local wo = vim.wo[0][0]
     wo.wrap = true
@@ -92,16 +92,6 @@ autocmd("FileType", {
   end,
 })
 
--- vimtex dùng syntax của nó (conceal, mathzone); treesitter highlight sẽ đè lên
-autocmd("FileType", {
-  group = prose,
-  pattern = { "tex", "plaintex", "bibtex" },
-  callback = function(args)
-    pcall(vim.treesitter.stop, args.buf)
-    vim.bo[args.buf].syntax = "on"
-  end,
-})
-
 -- Phím tắt <leader>m*: cùng một chữ cái, tuỳ loại file
 local function ft_maps(ft, maps)
   autocmd("FileType", {
@@ -118,20 +108,6 @@ end
 ft_maps("markdown", {
   { "<leader>mp", "<cmd>MarkdownPreviewToggle<cr>", "Markdown preview (browser)" },
   { "<leader>mr", "<cmd>RenderMarkdown toggle<cr>", "Markdown toggle in-buffer render" },
-})
-
-ft_maps("typst", {
-  { "<leader>mp", "<cmd>TypstPreviewToggle<cr>", "Typst live preview" },
-  { "<leader>me", "<cmd>LspTinymistExportPdf<cr>", "Typst export PDF" },
-  { "<leader>mm", "<cmd>LspTinymistPinMain<cr>", "Typst pin main file" },
-})
-
-ft_maps({ "tex", "plaintex" }, {
-  { "<leader>mp", "<cmd>VimtexCompile<cr>", "LaTeX compile (toggle continuous)" },
-  { "<leader>mv", "<cmd>VimtexView<cr>", "LaTeX view PDF" },
-  { "<leader>mo", "<cmd>VimtexTocToggle<cr>", "LaTeX table of contents" },
-  { "<leader>mc", "<cmd>VimtexClean<cr>", "LaTeX clean aux files" },
-  { "<leader>mi", "<cmd>VimtexInfo<cr>", "LaTeX info" },
 })
 
 -- Debug test Go (nvim-dap-go)

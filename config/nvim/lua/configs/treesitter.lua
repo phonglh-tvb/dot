@@ -11,7 +11,7 @@ M.parsers = {
   -- Odoo: view / QWeb là xml
   "xml",
   -- tài liệu
-  "markdown", "markdown_inline", "latex", "bibtex", "typst",
+  "markdown", "markdown_inline",
   -- khác
   "bash", "dockerfile", "sql", "regex", "diff", "gitcommit", "git_rebase", "gitignore", "ini", "make",
 }

@@ -91,11 +91,9 @@ vim.pack.add({
   gh "leoluz/nvim-dap-go",
   gh "mfussenegger/nvim-dap-python",
 
-  -- Viết tài liệu: Markdown, LaTeX, Typst
+  -- Viết tài liệu: Markdown
   gh "MeanderingProgrammer/render-markdown.nvim",
   gh "iamcco/markdown-preview.nvim",
-  gh "lervag/vimtex",
-  { src = gh "chomosuke/typst-preview.nvim", version = vim.version.range "1.x" },
 }, { confirm = not headless })
 
 -- Theme: rose-pine rồi base46 đè lên, giống thứ tự cũ của NvChad
