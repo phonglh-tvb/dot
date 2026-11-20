@@ -23,8 +23,6 @@ return {
   "lua-language-server",
   "taplo",
   "marksman",
-  "texlab",
-  "tinymist",
   "clangd",
 
   -- Formatter / linter

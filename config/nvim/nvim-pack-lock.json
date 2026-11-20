@@ -135,19 +135,10 @@
       "rev": "31e3c38ce9b29781e4422fc0322eb0a21f4e8668",
       "src": "https://github.com/folke/todo-comments.nvim"
     },
-    "typst-preview.nvim": {
-      "rev": "1c2e19486397be1c580b560fc50ee36abe329c46",
-      "src": "https://github.com/chomosuke/typst-preview.nvim",
-      "version": "1.0.0 - 2.0.0"
-    },
     "ui": {
       "rev": "8cbf0dc1883b20a1df114149c187d250f0af0853",
       "src": "https://github.com/nvchad/ui",
       "version": "'v3.0'"
-    },
-    "vimtex": {
-      "rev": "3f96503904db6acdb7108cd93a9580dd41e88555",
-      "src": "https://github.com/lervag/vimtex"
     },
     "volt": {
       "rev": "4351c5cd790a0d39491c4d5c75dd62d7db3d3414",
