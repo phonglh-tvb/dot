@@ -4,6 +4,12 @@ Những thay đổi đáng kể của repo, mới nhất ở trên. Repo không 
 
 Cách ghi một dòng mới: mục Commit và PR trong [AGENTS.md](AGENTS.md).
 
+## 2026-11-21
+
+### Bỏ
+
+- Hỗ trợ LaTeX và Typst: plugin vimtex và typst-preview, LSP texlab và tinymist, parser treesitter, phím `<leader>m*` trong file tex/typst, MacTeX và `typst` trong Brewfile. Markdown giữ nguyên. Máy đã cài thì sau khi pull chạy `:lua vim.pack.del { "vimtex", "typst-preview.nvim" }`, nếu không vim.pack ghi lại hai plugin vào lockfile. [#35]
+
 ## 2026-11-16
 
 ### Thêm
@@ -141,6 +147,7 @@ Cách ghi một dòng mới: mục Commit và PR trong [AGENTS.md](AGENTS.md).
 
 - Tên người dùng git. [1434707]
 
+[#35]: https://github.com/phonglh-tvb/dot/pull/35
 [#34]: https://github.com/phonglh-tvb/dot/pull/34
 [#33]: https://github.com/phonglh-tvb/dot/pull/33
 [#32]: https://github.com/phonglh-tvb/dot/pull/32
