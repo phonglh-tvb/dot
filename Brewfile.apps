@@ -35,7 +35,6 @@ cask "firefox@developer-edition"
 cask "google-chrome"
 
 # tài liệu
-cask "mactex"
 cask "notion"
 cask "obsidian"
 cask "skim"

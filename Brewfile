@@ -51,7 +51,6 @@ brew "luarocks"
 brew "mise"
 brew "pipx"
 brew "protobuf"
-brew "typst"
 brew "uv"
 
 # container: trên macOS Lima chạy docker (không dùng Docker Desktop); trên Linux docker chạy thẳng, brew chỉ cài CLI
