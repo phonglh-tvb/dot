@@ -22,8 +22,6 @@ local servers = {
   -- khác
   "clangd",
   "taplo",
-  "tinymist",
-  "texlab",
   "marksman",
 }
 
